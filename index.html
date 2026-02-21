@@ -1,106 +1,495 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>open</title>
-
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>gift</title>
 <style>
-body{
-background:#f6f1e8;
-font-family:system-ui, -apple-system, sans-serif;
-display:flex;
-justify-content:center;
-align-items:center;
-height:100vh;
-margin:0;
-color:#3b3b3b;
-text-align:center;
-overflow:hidden;
-}
+  :root{
+    --bg1:#fff2f4;
+    --bg2:#f6fff8;
+    --card: rgba(255,255,255,.78);
+    --ink:#222;
+    --muted:#666;
+    --shadow: 0 18px 45px rgba(0,0,0,.10);
+    --radius: 22px;
+    --pink:#ffb3c7;
+    --peach:#ffd2a6;
+    --mint:#bfead8;
+    --lav:#d8c7ff;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    color:var(--ink);
+    background:
+      radial-gradient(circle at 15% 10%, var(--bg1) 0%, transparent 55%),
+      radial-gradient(circle at 85% 15%, var(--bg2) 0%, transparent 55%),
+      radial-gradient(circle at 50% 100%, #fff 0%, #f7f2ff 60%, #f7f7ff 100%);
+    overflow:hidden;
+  }
 
-.box{
-width:180px;
-height:180px;
-background:#e7dccb;
-border-radius:22px;
-display:flex;
-align-items:center;
-justify-content:center;
-cursor:pointer;
-box-shadow:0 15px 35px rgba(0,0,0,.08);
-transition:.35s;
-font-size:18px;
-}
+  .app{
+    width:min(520px, 92vw);
+    padding:18px;
+    position:relative;
+    z-index:2;
+  }
 
-.box:active{transform:scale(.95);}
+  .card{
+    background:var(--card);
+    border:1px solid rgba(0,0,0,.06);
+    border-radius:var(--radius);
+    box-shadow: var(--shadow);
+    padding:18px;
+    backdrop-filter: blur(8px);
+  }
 
-.hidden{display:none;}
+  .top{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    margin-bottom:14px;
+  }
+  .badge{
+    font-size:12px;
+    padding:8px 10px;
+    border-radius:999px;
+    background:linear-gradient(90deg, rgba(255,179,199,.55), rgba(191,234,216,.55));
+    border:1px solid rgba(0,0,0,.06);
+    white-space:nowrap;
+  }
+  .title{ font-size:18px; font-weight:700; letter-spacing:.2px; }
+  .sub{ margin:8px 0 0; color:var(--muted); font-size:14px; line-height:1.5; }
 
-.card{
-max-width:320px;
-line-height:1.7;
-animation:fade .7s;
-padding:20px;
-}
+  .screen{ display:none; }
+  .screen.active{ display:block; }
 
-button{
-margin-top:28px;
-padding:13px 20px;
-border:none;
-border-radius:14px;
-background:#d8cbb5;
-cursor:pointer;
-font-size:15px;
-transition:.25s;
-}
+  /* Buttons */
+  .btn{
+    margin-top:14px;
+    width:100%;
+    padding:14px 14px;
+    border:none;
+    border-radius:16px;
+    cursor:pointer;
+    font-weight:650;
+    font-size:15px;
+    background:linear-gradient(90deg, rgba(255,179,199,.85), rgba(191,234,216,.85));
+    box-shadow: 0 12px 30px rgba(0,0,0,.08);
+    transition:.18s transform;
+  }
+  .btn:active{ transform: scale(.98); }
 
-button:active{transform:scale(.96)}
+  /* Gift area */
+  .stage{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    padding:10px 0 0;
+  }
 
-@keyframes fade{
-from{opacity:0;transform:translateY(12px)}
-to{opacity:1}
-}
+  .giftWrap{
+    width:240px;
+    height:240px;
+    position:relative;
+    margin:8px auto 4px;
+    user-select:none;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .giftBox{
+    position:absolute;
+    left:36px; right:36px;
+    bottom:34px;
+    height:130px;
+    border-radius:20px;
+    background:linear-gradient(180deg, #ffe7d8, #ffd7e5);
+    box-shadow: 0 18px 40px rgba(0,0,0,.10);
+    border:1px solid rgba(0,0,0,.05);
+    overflow:hidden;
+  }
+  .giftStripe{
+    position:absolute;
+    top:0; bottom:0;
+    left:50%;
+    width:34px;
+    transform:translateX(-50%);
+    background:linear-gradient(180deg, rgba(191,234,216,.95), rgba(216,199,255,.95));
+  }
+  .giftStripeH{
+    position:absolute;
+    left:0; right:0;
+    top:48px;
+    height:34px;
+    background:linear-gradient(90deg, rgba(191,234,216,.95), rgba(216,199,255,.95));
+  }
+
+  .lid{
+    position:absolute;
+    left:24px; right:24px;
+    top:64px;
+    height:66px;
+    border-radius:20px;
+    background:linear-gradient(180deg, #ffe0ea, #ffd0de);
+    box-shadow: 0 16px 34px rgba(0,0,0,.10);
+    border:1px solid rgba(0,0,0,.05);
+    transform-origin:center bottom;
+    transition: transform .65s cubic-bezier(.2,.9,.2,1), top .65s cubic-bezier(.2,.9,.2,1);
+    z-index:3;
+  }
+  .bow{
+    position:absolute;
+    left:50%;
+    top:36px;
+    width:86px;
+    height:48px;
+    transform:translateX(-50%);
+    z-index:4;
+    transition: transform .65s cubic-bezier(.2,.9,.2,1), top .65s cubic-bezier(.2,.9,.2,1);
+  }
+  .bow:before, .bow:after{
+    content:"";
+    position:absolute;
+    width:42px;
+    height:34px;
+    top:8px;
+    border-radius:18px 18px 18px 6px;
+    background:linear-gradient(180deg, rgba(255,179,199,.95), rgba(255,210,166,.95));
+    box-shadow: 0 10px 22px rgba(0,0,0,.08);
+  }
+  .bow:before{ left:0; transform:rotate(-10deg); }
+  .bow:after{ right:0; transform:rotate(10deg) scaleX(-1); }
+  .knot{
+    position:absolute;
+    left:50%;
+    top:16px;
+    width:20px;
+    height:20px;
+    transform:translateX(-50%);
+    border-radius:8px;
+    background:linear-gradient(180deg, rgba(255,210,166,.95), rgba(255,179,199,.95));
+    box-shadow: 0 10px 20px rgba(0,0,0,.08);
+  }
+
+  /* Open state */
+  .open .lid{
+    top:28px;
+    transform: rotateX(75deg);
+  }
+  .open .bow{
+    top:14px;
+    transform: translateX(-50%) rotate(-6deg);
+  }
+
+  /* Kitty */
+  .kitty{
+    position:absolute;
+    left:50%;
+    bottom:84px;
+    transform:translate(-50%, 40px) scale(.9);
+    opacity:0;
+    font-size:64px;
+    z-index:5;
+    cursor:pointer;
+    filter: drop-shadow(0 16px 22px rgba(0,0,0,.12));
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .kittyHint{
+    margin-top:8px;
+    font-size:13px;
+    color:var(--muted);
+    opacity:.0;
+    transition: opacity .3s;
+  }
+
+  /* Jump out */
+  @keyframes jumpOut{
+    0%{ transform:translate(-50%, 40px) scale(.9); opacity:0; }
+    35%{ transform:translate(-50%, -30px) scale(1.06); opacity:1; }
+    60%{ transform:translate(-50%, -10px) scale(1.0); opacity:1; }
+    100%{ transform:translate(-50%, -8px) scale(1.0); opacity:1; }
+  }
+
+  /* Run around (after jump) */
+  @keyframes runAround{
+    0%{ left:50%; top:110px; transform:translate(-50%,-50%) scale(1); }
+    20%{ left:15%; top:170px; transform:translate(-50%,-50%) scale(1) rotate(-3deg); }
+    45%{ left:82%; top:150px; transform:translate(-50%,-50%) scale(1) rotate(3deg); }
+    70%{ left:25%; top:105px; transform:translate(-50%,-50%) scale(1) rotate(-2deg); }
+    100%{ left:60%; top:135px; transform:translate(-50%,-50%) scale(1); }
+  }
+
+  .kitty.jump{ animation: jumpOut .7s cubic-bezier(.2,.9,.2,1) forwards; }
+  .kitty.run{
+    position:fixed;
+    animation: runAround 1.4s ease-in-out 0s 1 forwards;
+  }
+
+  .hintOn{ opacity:1 !important; }
+
+  /* Messages */
+  .msgBox{
+    min-height:140px;
+    padding:14px;
+    border-radius:18px;
+    background:rgba(255,255,255,.70);
+    border:1px solid rgba(0,0,0,.05);
+    box-shadow: 0 12px 30px rgba(0,0,0,.06);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    font-size:18px;
+    line-height:1.6;
+  }
+
+  /* Confetti canvas */
+  #confetti{
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    z-index:1;
+    display:none;
+  }
+
+  .finalBig{
+    font-size:28px;
+    font-weight:850;
+    letter-spacing:.2px;
+    margin:6px 0 8px;
+  }
+  .finalName{
+    display:inline-block;
+    padding:4px 10px;
+    border-radius:999px;
+    background:linear-gradient(90deg, rgba(255,179,199,.55), rgba(216,199,255,.55));
+    border:1px solid rgba(0,0,0,.06);
+  }
 </style>
 </head>
 
 <body>
+<canvas id="confetti"></canvas>
 
-<div id="gift" class="box" onclick="openGift()">tap to open</div>
+<div class="app">
+  <div class="card">
+    <div class="top">
+      <div>
+        <div class="title">a small gift</div>
+        <p class="sub" id="subline">tap the box</p>
+      </div>
+      <div class="badge" id="badge">level 1</div>
+    </div>
 
-<div id="content" class="hidden card">
-<p id="text"></p>
-<button onclick="next()">continue</button>
+    <!-- SCREEN 1 -->
+    <div id="s1" class="screen active">
+      <div class="stage">
+        <div class="giftWrap" id="giftWrap">
+          <div class="bow"><div class="knot"></div></div>
+          <div class="lid"></div>
+
+          <div class="giftBox">
+            <div class="giftStripe"></div>
+            <div class="giftStripeH"></div>
+          </div>
+
+          <div class="kitty" id="kitty" title="click me">🐱</div>
+        </div>
+
+        <div class="kittyHint" id="kittyHint">ok now catch the kitten (tap it)</div>
+        <button class="btn" id="openBtn">open</button>
+      </div>
+    </div>
+
+    <!-- SCREEN 2 -->
+    <div id="s2" class="screen">
+      <div class="msgBox" id="msg"></div>
+      <button class="btn" id="nextBtn">next</button>
+    </div>
+
+    <!-- SCREEN 3 -->
+    <div id="s3" class="screen">
+      <div class="stage" style="padding-top:2px">
+        <div class="finalBig">Happy Birth <span class="finalName">Fatoom</span></div>
+        <p class="sub" style="font-size:16px; margin-top:0">
+          may Allah put barakah in your time and ease in what comes next
+        </p>
+        <button class="btn" onclick="boomAgain()">boom again</button>
+      </div>
+    </div>
+
+  </div>
 </div>
 
 <script>
-const messages = [
-"ok you opened it",
-"there was supposed to be wrapping paper but this is digital",
-"21 feels illegal but apparently it's allowed",
-"this isn't a normal birthday message",
-"i wanted you to spend effort receiving it",
-"happy 21st",
-"may Allah put barakah in your time and ease in what comes next"
-];
+  // ===== Screen logic =====
+  const s1 = document.getElementById('s1');
+  const s2 = document.getElementById('s2');
+  const s3 = document.getElementById('s3');
+  const badge = document.getElementById('badge');
+  const subline = document.getElementById('subline');
 
-let i=0;
+  const giftWrap = document.getElementById('giftWrap');
+  const openBtn = document.getElementById('openBtn');
+  const kitty = document.getElementById('kitty');
+  const kittyHint = document.getElementById('kittyHint');
 
-function openGift(){
-document.getElementById("gift").classList.add("hidden");
-document.getElementById("content").classList.remove("hidden");
-document.getElementById("text").innerText=messages[i];
-}
+  let opened = false;
+  let kittyReleased = false;
 
-function next(){
-i++;
-if(i<messages.length){
-document.getElementById("text").innerText=messages[i];
-}else{
-document.querySelector("button").style.display="none";
-}
-}
+  openBtn.addEventListener('click', () => {
+    if(opened) return;
+    opened = true;
+
+    // open the box
+    giftWrap.classList.add('open');
+    openBtn.disabled = true;
+    openBtn.textContent = "opened";
+
+    // kitten jumps out
+    kitty.classList.add('jump');
+
+    setTimeout(() => {
+      kittyReleased = true;
+      // kitten runs around
+      kitty.classList.add('run');
+      kittyHint.classList.add('hintOn');
+      subline.textContent = "tap the kitten";
+    }, 750);
+  });
+
+  kitty.addEventListener('click', () => {
+    if(!kittyReleased) return;
+
+    // go to messages screen
+    s1.classList.remove('active');
+    s2.classList.add('active');
+    badge.textContent = "level 2";
+    subline.textContent = "ok now read this";
+
+    // stop kitten + hide
+    kitty.style.display = "none";
+    kittyHint.style.display = "none";
+
+    showMsg();
+  });
+
+  // ===== Messages =====
+  const msg = document.getElementById('msg');
+  const nextBtn = document.getElementById('nextBtn');
+
+  const messages = [
+    "ok serious for 2 seconds",
+    "21 is kinda wild",
+    "i made this instead of a normal message",
+    "happy birthday fr",
+    "may Allah bless your year"
+  ];
+  let mi = 0;
+
+  function showMsg(){
+    msg.textContent = messages[mi];
+  }
+
+  nextBtn.addEventListener('click', () => {
+    mi++;
+    if(mi < messages.length){
+      showMsg();
+      return;
+    }
+    // final screen + confetti
+    s2.classList.remove('active');
+    s3.classList.add('active');
+    badge.textContent = "boom";
+    subline.textContent = "ok done";
+    startConfetti(1400);
+  });
+
+  // ===== Confetti (simple canvas) =====
+  const canvas = document.getElementById('confetti');
+  const ctx = canvas.getContext('2d');
+  let W, H, confettiPieces = [], confettiOn = false;
+
+  function resize(){
+    W = canvas.width = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+  window.addEventListener('resize', resize);
+  resize();
+
+  function rand(min,max){ return Math.random()*(max-min)+min; }
+
+  function makeConfetti(n=180){
+    const colors = ["#ffb3c7","#ffd2a6","#bfead8","#d8c7ff","#ffffff"];
+    confettiPieces = Array.from({length:n}).map(()=>({
+      x: rand(0,W),
+      y: rand(-H, 0),
+      r: rand(3,7),
+      vy: rand(2.5,6.5),
+      vx: rand(-2.2,2.2),
+      rot: rand(0,Math.PI),
+      vr: rand(-0.12,0.12),
+      c: colors[Math.floor(rand(0, colors.length))]
+    }));
+  }
+
+  function draw(){
+    if(!confettiOn) return;
+    ctx.clearRect(0,0,W,H);
+    confettiPieces.forEach(p=>{
+      p.x += p.vx;
+      p.y += p.vy;
+      p.rot += p.vr;
+
+      if(p.y > H + 20){
+        p.y = rand(-80, -20);
+        p.x = rand(0,W);
+      }
+      if(p.x < -20) p.x = W+20;
+      if(p.x > W+20) p.x = -20;
+
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.rot);
+      ctx.fillStyle = p.c;
+      ctx.fillRect(-p.r, -p.r, p.r*2, p.r*2);
+      ctx.restore();
+    });
+    requestAnimationFrame(draw);
+  }
+
+  function startConfetti(ms=1200){
+    canvas.style.display = "block";
+    confettiOn = true;
+    makeConfetti(220);
+    draw();
+    setTimeout(()=>{
+      confettiOn = false;
+      ctx.clearRect(0,0,W,H);
+      canvas.style.display = "none";
+    }, ms);
+  }
+
+  function boomAgain(){
+    startConfetti(1400);
+  }
+
+  // Safety: always start on screen 1 (prevents weird caching behavior)
+  (function forceStart(){
+    s1.classList.add('active');
+    s2.classList.remove('active');
+    s3.classList.remove('active');
+  })();
 </script>
-
 </body>
 </html>
