@@ -404,33 +404,34 @@
     transform: scale(1.25);
   }
 
-  /* tiny fx particles */
+  /* tiny fx particles (LONGER) */
   .fxParticle{
     position:absolute;
     font-size:18px;
     opacity:0;
     transform: translate(-50%,-50%) scale(.8);
-    animation: popFade 900ms ease forwards;
+    animation: popFade 1800ms ease forwards;
     filter: drop-shadow(0 10px 16px rgba(0,0,0,.10));
   }
   @keyframes popFade{
     0%{opacity:0; transform:translate(-50%,-50%) scale(.7) rotate(-6deg);}
-    25%{opacity:1;}
-    100%{opacity:0; transform:translate(-50%,-85%) scale(1.15) rotate(8deg);}
+    18%{opacity:1;}
+    70%{opacity:1; transform:translate(-50%,-80%) scale(1.12) rotate(7deg);}
+    100%{opacity:0; transform:translate(-50%,-105%) scale(1.18) rotate(10deg);}
   }
 
-  /* moon overlay */
+  /* moon overlay (LONGER) */
   .moonDim{
     position:fixed; inset:0;
     background: rgba(40,40,60,.18);
     opacity:0;
-    animation: dimInOut 1200ms ease forwards;
+    animation: dimInOut 2000ms ease forwards;
     z-index:8;
     pointer-events:none;
   }
   @keyframes dimInOut{
     0%{opacity:0;}
-    30%{opacity:1;}
+    25%{opacity:1;}
     100%{opacity:0;}
   }
   .moonRing{
@@ -444,13 +445,13 @@
       0 0 30px 10px rgba(216,199,255,.35),
       0 0 60px 20px rgba(255,179,199,.18);
     opacity:0;
-    animation: moonPulse 1200ms ease forwards;
+    animation: moonPulse 2000ms ease forwards;
     z-index:9;
     pointer-events:none;
   }
   @keyframes moonPulse{
     0%{opacity:0; transform:translate(-50%,-50%) scale(.85);}
-    35%{opacity:1; transform:translate(-50%,-50%) scale(1);}
+    32%{opacity:1; transform:translate(-50%,-50%) scale(1);}
     100%{opacity:0; transform:translate(-50%,-50%) scale(1.12);}
   }
 </style>
@@ -500,17 +501,14 @@
       </div>
     </div>
 
-    <!-- Screen 2: Story mode -->
+    <!-- Screen 2: Slides -->
     <div class="screen" id="s2">
-      <p class="sub" style="margin-top:0">No menu. Just vibes. Tap next 😼</p>
-
       <div class="storyWrap">
         <div class="storyTrack" id="track">
 
           <!-- Slide 1 -->
           <div class="slide" data-key="sparkles">
             <div class="iconSlot">
-              <!-- Replace with your file sparkles.png -->
               <img src="sparkles.png" alt="" onerror="this.remove(); this.parentNode.querySelector('.fallback').style.display='block';">
               <div class="fallback">✨</div>
             </div>
@@ -558,7 +556,7 @@
             <div class="smallLine">crown</div>
           </div>
 
-          <!-- Slide 6 -->
+          <!-- Slide 6 (dua stays here) -->
           <div class="slide" data-key="moon-glow">
             <div class="iconSlot">
               <img src="moon-glow.png" alt="" onerror="this.remove(); this.parentNode.querySelector('.fallback').style.display='block';">
@@ -587,10 +585,10 @@
           Happy Birth <span style="display:inline-block; padding:4px 12px; border-radius:999px; background:linear-gradient(90deg, rgba(255,179,199,.65), rgba(216,199,255,.65)); border:1px solid rgba(0,0,0,.06);">Fatoom</span>
         </div>
         <p class="sub" style="font-size:16px; margin:0; max-width:38ch;">
-          May Allah put barakah in your time and ease what comes next.
+          21 looks good on you.
         </p>
         <div class="nav">
-          <button class="btnGhost" id="backToStory">back</button>
+          <button class="btnGhost" id="backToSlides">back</button>
           <button class="btn" id="boomBtn">boom again</button>
         </div>
       </div>
@@ -639,7 +637,7 @@
     screens.forEach((s, idx)=> s.classList.toggle("active", idx===i));
     badgeEl.textContent = (i+1)+"/3";
     if(i===0){ titleEl.textContent="gift"; subEl.textContent="tap the box"; }
-    if(i===1){ titleEl.textContent="story"; subEl.textContent="tap next"; }
+    if(i===1){ titleEl.textContent="for you"; subEl.textContent="tap next"; }
     if(i===2){ titleEl.textContent="boom"; subEl.textContent="happy 21st"; }
   }
 
@@ -669,6 +667,35 @@
     }
   }
 
+  // ===== Slides =====
+  const track = document.getElementById("track");
+  const slides = Array.from(document.querySelectorAll(".slide"));
+  const dotsWrap = document.getElementById("dots");
+  const prevBtn = document.getElementById("prevBtn");
+  const nextBtn = document.getElementById("nextBtn");
+  const fxLayer = document.getElementById("fxLayer");
+
+  let currentSlide = 0;
+
+  function buildDots(){
+    dotsWrap.innerHTML = "";
+    slides.forEach((_, i)=>{
+      const d = document.createElement("div");
+      d.className = "dot" + (i===0 ? " on" : "");
+      dotsWrap.appendChild(d);
+    });
+  }
+  buildDots();
+
+  function setSlide(i, silent=false){
+    currentSlide = Math.max(0, Math.min(slides.length-1, i));
+    track.style.transform = `translateX(${-currentSlide * 100}%)`;
+    Array.from(dotsWrap.children).forEach((d, idx)=> d.classList.toggle("on", idx===currentSlide));
+    prevBtn.disabled = currentSlide === 0;
+    nextBtn.textContent = (currentSlide === slides.length-1) ? "finish" : "next";
+    if(!silent) playSlideFX(currentSlide);
+  }
+
   function resetSequence(){
     stopRunner();
     opened = false;
@@ -680,9 +707,8 @@
     kittyInBox.classList.remove("pop");
     kittyInBox.style.display = "block";
     kittyInBox.style.opacity = "0";
-    subEl.textContent = "tap the box";
-    setScreen(0);
     setSlide(0, true);
+    setScreen(0);
   }
 
   function catchKitten(){
@@ -746,7 +772,6 @@
 
     setTimeout(()=>{
       hint.classList.add("on");
-      subEl.textContent = "catch kitten";
       kittyInBox.style.display = "none";
       startRunner();
     }, 850);
@@ -757,49 +782,18 @@
   catchBtn.addEventListener("click", ()=>{ if(opened) catchKitten(); });
   restartBtn.addEventListener("click", resetSequence);
 
-  // ===== Story slides =====
-  const track = document.getElementById("track");
-  const slides = Array.from(document.querySelectorAll(".slide"));
-  const dotsWrap = document.getElementById("dots");
-  const prevBtn = document.getElementById("prevBtn");
-  const nextBtn = document.getElementById("nextBtn");
-
-  let currentSlide = 0;
-
-  function buildDots(){
-    dotsWrap.innerHTML = "";
-    slides.forEach((_, i)=>{
-      const d = document.createElement("div");
-      d.className = "dot" + (i===0 ? " on" : "");
-      dotsWrap.appendChild(d);
-    });
-  }
-  buildDots();
-
-  function setSlide(i, silent=false){
-    currentSlide = Math.max(0, Math.min(slides.length-1, i));
-    track.style.transform = `translateX(${-currentSlide * 100}%)`;
-
-    Array.from(dotsWrap.children).forEach((d, idx)=> d.classList.toggle("on", idx===currentSlide));
-
-    prevBtn.disabled = currentSlide === 0;
-    nextBtn.textContent = (currentSlide === slides.length-1) ? "finish" : "next";
-
-    if(!silent) playSlideFX(currentSlide);
-  }
-
   prevBtn.addEventListener("click", ()=> setSlide(currentSlide - 1));
   nextBtn.addEventListener("click", ()=>{
     if(currentSlide === slides.length - 1){
       setScreen(2);
-      startConfetti(1600);
+      startConfetti(2600);
       return;
     }
     setSlide(currentSlide + 1);
   });
 
   document.getElementById("backToGift").addEventListener("click", resetSequence);
-  document.getElementById("backToStory").addEventListener("click", ()=> setScreen(1));
+  document.getElementById("backToSlides").addEventListener("click", ()=> setScreen(1));
 
   // swipe on mobile
   let sx=0, sy=0;
@@ -819,9 +813,7 @@
     }
   });
 
-  // ===== Slide FX =====
-  const fxLayer = document.getElementById("fxLayer");
-
+  // ===== Slide FX (LONGER) =====
   function spawnParticles(symbols, count, cx, cy){
     for(let i=0;i<count;i++){
       const p = document.createElement("div");
@@ -833,7 +825,7 @@
       p.style.top  = (cy + dy) + "px";
       p.style.animationDelay = (Math.random()*120) + "ms";
       fxLayer.appendChild(p);
-      setTimeout(()=>p.remove(), 1000);
+      setTimeout(()=>p.remove(), 1900);
     }
   }
 
@@ -858,9 +850,9 @@
         p.textContent = "🐾";
         p.style.left = (50 + k*48) + "px";
         p.style.top  = (y + (Math.random()*18 - 9)) + "px";
-        p.style.animationDuration = "850ms";
+        p.style.animationDuration = "1600ms";
         fxLayer.appendChild(p);
-        setTimeout(()=>p.remove(), 900);
+        setTimeout(()=>p.remove(), 1600);
       }
     }
     if(key === "ribbon-pop"){
@@ -880,7 +872,7 @@
       ring.className = "moonRing";
       document.body.appendChild(ring);
       spawnParticles(["🌙","✨"], 12, cx, cy);
-      setTimeout(()=>{ dim.remove(); ring.remove(); }, 1300);
+      setTimeout(()=>{ dim.remove(); ring.remove(); }, 2000);
     }
   }
 
@@ -899,14 +891,14 @@
   function makeConfetti(n=260){
     const colors = ["#ffb3c7","#ffd2a6","#bfead8","#d8c7ff","#ffffff"];
     pieces = Array.from({length:n}).map(()=>({
-      x: rand(0,W),
-      y: rand(-H, 0),
-      s: rand(4,9),
-      vy: rand(2.8,7.2),
-      vx: rand(-2.6,2.6),
-      r: rand(0,Math.PI),
-      vr: rand(-0.16,0.16),
-      c: colors[Math.floor(rand(0, colors.length))]
+      x: Math.random()*W,
+      y: Math.random()*-H,
+      s: 4 + Math.random()*5,
+      vy: 2.8 + Math.random()*4.4,
+      vx: -2.6 + Math.random()*5.2,
+      r: Math.random()*Math.PI,
+      vr: -0.16 + Math.random()*0.32,
+      c: colors[Math.floor(Math.random()*colors.length)]
     }));
   }
 
@@ -918,7 +910,7 @@
       p.y += p.vy;
       p.r += p.vr;
 
-      if(p.y > H + 20){ p.y = rand(-80,-20); p.x = rand(0,W); }
+      if(p.y > H + 20){ p.y = -60; p.x = Math.random()*W; }
       if(p.x < -20) p.x = W+20;
       if(p.x > W+20) p.x = -20;
 
@@ -944,7 +936,7 @@
     }, ms);
   }
 
-  document.getElementById("boomBtn").addEventListener("click", ()=> startConfetti(1500));
+  document.getElementById("boomBtn").addEventListener("click", ()=> startConfetti(2400));
 
   // ===== Boot =====
   setScreen(0);
