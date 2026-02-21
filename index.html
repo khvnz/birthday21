@@ -331,7 +331,7 @@
     border:1px solid rgba(0,0,0,.06);
     background:rgba(255,255,255,.65);
     box-shadow: 0 12px 30px rgba(0,0,0,.07);
-    min-height:220px;
+    min-height:240px;
   }
 
   .storyTrack{
@@ -350,40 +350,41 @@
     align-items:center;
     justify-content:center;
     text-align:center;
-    gap:10px;
+    gap:12px;
     position:relative;
   }
 
+  /* ✅ BIGGER icon so your images are visible */
   .iconSlot{
-    width:64px;
-    height:64px;
-    border-radius:18px;
-    background: linear-gradient(90deg, rgba(255,179,199,.45), rgba(191,234,216,.45));
-    border:1px solid rgba(0,0,0,.06);
+    width:116px;
+    height:116px;
+    border-radius:28px;
+    background: rgba(255,255,255,.72);
+    border:1px solid rgba(0,0,0,.08);
     display:flex;
     align-items:center;
     justify-content:center;
     overflow:hidden;
+    box-shadow: 0 18px 40px rgba(0,0,0,.10);
   }
   .iconSlot img{
     width:100%;
     height:100%;
     object-fit:contain;
     pointer-events:none;
+    display:block;
   }
+
+  /* ✅ FIX: fallback emoji hidden by default so it won't show beside your image */
   .iconSlot .fallback{
-    font-size:32px;
+    display:none;
+    font-size:40px;
   }
 
   .bigLine{
     font-size:22px;
     font-weight:900;
     line-height:1.25;
-  }
-  .smallLine{
-    color:var(--muted);
-    font-size:13px;
-    margin-top:-4px;
   }
 
   .dots{
@@ -404,7 +405,7 @@
     transform: scale(1.25);
   }
 
-  /* tiny fx particles (LONGER) */
+  /* tiny fx particles (longer) */
   .fxParticle{
     position:absolute;
     font-size:18px;
@@ -418,41 +419,6 @@
     18%{opacity:1;}
     70%{opacity:1; transform:translate(-50%,-80%) scale(1.12) rotate(7deg);}
     100%{opacity:0; transform:translate(-50%,-105%) scale(1.18) rotate(10deg);}
-  }
-
-  /* moon overlay (LONGER) */
-  .moonDim{
-    position:fixed; inset:0;
-    background: rgba(40,40,60,.18);
-    opacity:0;
-    animation: dimInOut 2000ms ease forwards;
-    z-index:8;
-    pointer-events:none;
-  }
-  @keyframes dimInOut{
-    0%{opacity:0;}
-    25%{opacity:1;}
-    100%{opacity:0;}
-  }
-  .moonRing{
-    position:fixed;
-    left:50%;
-    top:22%;
-    width:170px; height:170px;
-    border-radius:50%;
-    transform:translate(-50%,-50%) scale(.9);
-    box-shadow:
-      0 0 30px 10px rgba(216,199,255,.35),
-      0 0 60px 20px rgba(255,179,199,.18);
-    opacity:0;
-    animation: moonPulse 2000ms ease forwards;
-    z-index:9;
-    pointer-events:none;
-  }
-  @keyframes moonPulse{
-    0%{opacity:0; transform:translate(-50%,-50%) scale(.85);}
-    32%{opacity:1; transform:translate(-50%,-50%) scale(1);}
-    100%{opacity:0; transform:translate(-50%,-50%) scale(1.12);}
   }
 </style>
 </head>
@@ -509,61 +475,51 @@
           <!-- Slide 1 -->
           <div class="slide" data-key="sparkles">
             <div class="iconSlot">
-              <img src="sparkles.png" alt="" onerror="this.remove(); this.parentNode.querySelector('.fallback').style.display='block';">
+              <img src="sparkles.png" alt=""
+                onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
               <div class="fallback">✨</div>
             </div>
             <div class="bigLine">You Day!!!!</div>
-            <div class="smallLine">sparkles</div>
           </div>
 
           <!-- Slide 2 -->
           <div class="slide" data-key="paw-prints">
             <div class="iconSlot">
-              <img src="paw-prints.png" alt="" onerror="this.remove(); this.parentNode.querySelector('.fallback').style.display='block';">
+              <img src="paw-prints.png" alt=""
+                onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
               <div class="fallback">🐾</div>
             </div>
             <div class="bigLine">Oldie, you’re 21. Don’t worry I’ll always be here before you 😼</div>
-            <div class="smallLine">paw-prints</div>
           </div>
 
           <!-- Slide 3 -->
           <div class="slide" data-key="ribbon-pop">
             <div class="iconSlot">
-              <img src="ribbon-pop.png" alt="" onerror="this.remove(); this.parentNode.querySelector('.fallback').style.display='block';">
+              <img src="ribbon-pop.png" alt=""
+                onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
               <div class="fallback">🎀</div>
             </div>
             <div class="bigLine">You act tough, but you actually care about everything.</div>
-            <div class="smallLine">ribbon-pop</div>
           </div>
 
           <!-- Slide 4 -->
           <div class="slide" data-key="note-slide">
             <div class="iconSlot">
-              <img src="note-slide.png" alt="" onerror="this.remove(); this.parentNode.querySelector('.fallback').style.display='block';">
+              <img src="note-slide.png" alt=""
+                onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
               <div class="fallback">📝</div>
             </div>
             <div class="bigLine">You bring the energy wherever you go.</div>
-            <div class="smallLine">note-slide</div>
           </div>
 
           <!-- Slide 5 -->
           <div class="slide" data-key="crown">
             <div class="iconSlot">
-              <img src="crown.png" alt="" onerror="this.remove(); this.parentNode.querySelector('.fallback').style.display='block';">
+              <img src="crown.png" alt=""
+                onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
               <div class="fallback">👑</div>
             </div>
             <div class="bigLine">I respect you more than I say.</div>
-            <div class="smallLine">crown</div>
-          </div>
-
-          <!-- Slide 6 (dua stays here) -->
-          <div class="slide" data-key="moon-glow">
-            <div class="iconSlot">
-              <img src="moon-glow.png" alt="" onerror="this.remove(); this.parentNode.querySelector('.fallback').style.display='block';">
-              <div class="fallback">🌙</div>
-            </div>
-            <div class="bigLine">May Allah put barakah in your time and ease what comes next.</div>
-            <div class="smallLine">moon-glow</div>
           </div>
 
         </div>
@@ -584,8 +540,8 @@
         <div style="font-size:32px; font-weight:950; margin:4px 0 10px;">
           Happy Birth <span style="display:inline-block; padding:4px 12px; border-radius:999px; background:linear-gradient(90deg, rgba(255,179,199,.65), rgba(216,199,255,.65)); border:1px solid rgba(0,0,0,.06);">Fatoom</span>
         </div>
-        <p class="sub" style="font-size:16px; margin:0; max-width:38ch;">
-          21 looks good on you.
+        <p class="sub" style="font-size:16px; margin:0; max-width:44ch;">
+          May Allah put barakah in your time and ease what comes next.
         </p>
         <div class="nav">
           <button class="btnGhost" id="backToSlides">back</button>
@@ -674,6 +630,7 @@
   const prevBtn = document.getElementById("prevBtn");
   const nextBtn = document.getElementById("nextBtn");
   const fxLayer = document.getElementById("fxLayer");
+  const storyWrap = document.querySelector(".storyWrap");
 
   let currentSlide = 0;
 
@@ -797,7 +754,6 @@
 
   // swipe on mobile
   let sx=0, sy=0;
-  const storyWrap = document.querySelector(".storyWrap");
   storyWrap.addEventListener("touchstart", (e)=>{
     sx = e.touches[0].clientX;
     sy = e.touches[0].clientY;
@@ -813,7 +769,7 @@
     }
   });
 
-  // ===== Slide FX (LONGER) =====
+  // ===== Slide FX =====
   function spawnParticles(symbols, count, cx, cy){
     for(let i=0;i<count;i++){
       const p = document.createElement("div");
@@ -843,17 +799,7 @@
       burstStars();
     }
     if(key === "paw-prints"){
-      const y = window.innerHeight * 0.74;
-      for(let k=0;k<9;k++){
-        const p = document.createElement("div");
-        p.className = "fxParticle";
-        p.textContent = "🐾";
-        p.style.left = (50 + k*48) + "px";
-        p.style.top  = (y + (Math.random()*18 - 9)) + "px";
-        p.style.animationDuration = "1600ms";
-        fxLayer.appendChild(p);
-        setTimeout(()=>p.remove(), 1600);
-      }
+      spawnParticles(["🐾","✨","😼"], 14, cx, cy);
     }
     if(key === "ribbon-pop"){
       spawnParticles(["🎀","💗","🫧"], 14, cx, cy);
@@ -863,16 +809,6 @@
     }
     if(key === "crown"){
       spawnParticles(["👑","✨","⭐"], 16, cx, cy);
-    }
-    if(key === "moon-glow"){
-      const dim = document.createElement("div");
-      dim.className = "moonDim";
-      document.body.appendChild(dim);
-      const ring = document.createElement("div");
-      ring.className = "moonRing";
-      document.body.appendChild(ring);
-      spawnParticles(["🌙","✨"], 12, cx, cy);
-      setTimeout(()=>{ dim.remove(); ring.remove(); }, 2000);
     }
   }
 
