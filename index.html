@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>open</title>
+
+<style>
+body{
+background:#f6f1e8;
+font-family:system-ui, -apple-system, sans-serif;
+display:flex;
+justify-content:center;
+align-items:center;
+height:100vh;
+margin:0;
+color:#3b3b3b;
+text-align:center;
+overflow:hidden;
+}
+
+.box{
+width:180px;
+height:180px;
+background:#e7dccb;
+border-radius:22px;
+display:flex;
+align-items:center;
+justify-content:center;
+cursor:pointer;
+box-shadow:0 15px 35px rgba(0,0,0,.08);
+transition:.35s;
+font-size:18px;
+}
+
+.box:active{transform:scale(.95);}
+
+.hidden{display:none;}
+
+.card{
+max-width:320px;
+line-height:1.7;
+animation:fade .7s;
+padding:20px;
+}
+
+button{
+margin-top:28px;
+padding:13px 20px;
+border:none;
+border-radius:14px;
+background:#d8cbb5;
+cursor:pointer;
+font-size:15px;
+transition:.25s;
+}
+
+button:active{transform:scale(.96)}
+
+@keyframes fade{
+from{opacity:0;transform:translateY(12px)}
+to{opacity:1}
+}
+</style>
+</head>
+
+<body>
+
+<div id="gift" class="box" onclick="openGift()">tap to open</div>
+
+<div id="content" class="hidden card">
+<p id="text"></p>
+<button onclick="next()">continue</button>
+</div>
+
+<script>
+const messages = [
+"ok you opened it",
+"there was supposed to be wrapping paper but this is digital",
+"21 feels illegal but apparently it's allowed",
+"this isn't a normal birthday message",
+"i wanted you to spend effort receiving it",
+"happy 21st",
+"may Allah put barakah in your time and ease in what comes next"
+];
+
+let i=0;
+
+function openGift(){
+document.getElementById("gift").classList.add("hidden");
+document.getElementById("content").classList.remove("hidden");
+document.getElementById("text").innerText=messages[i];
+}
+
+function next(){
+i++;
+if(i<messages.length){
+document.getElementById("text").innerText=messages[i];
+}else{
+document.querySelector("button").style.display="none";
+}
+}
+</script>
+
+</body>
+</html>
