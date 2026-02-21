@@ -10,7 +10,7 @@
     --bg1:#ffe8ee;
     --bg2:#eafff4;
     --bg3:#f2ecff;
-    --card: rgba(255,255,255,.84);
+    --card: rgba(255,255,255,.86);
     --ink:#1f1f1f;
     --muted:#6a6a6a;
     --pink:#ffb3c7;
@@ -37,7 +37,7 @@
     overflow:hidden;
   }
 
-  /* alive background */
+  /* alive background blobs */
   .blob{
     position:fixed;
     width:260px; height:260px;
@@ -54,6 +54,7 @@
     100%{ transform: translate(0,0) scale(1); }
   }
 
+  /* twinkling stars */
   .star{
     position:fixed;
     width:6px; height:6px;
@@ -71,8 +72,38 @@
     100%{opacity:.15; transform:scale(.8);}
   }
 
+  #confetti{
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    z-index:1;
+    display:none;
+  }
+
+  .arena{
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    z-index:10;
+  }
+  .runner{
+    position:absolute;
+    width:150px; height:150px;
+    padding:18px;
+    pointer-events:auto;
+    cursor:pointer;
+    filter: drop-shadow(0 18px 20px rgba(0,0,0,.12));
+  }
+
+  .fxLayer{
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    z-index:9;
+  }
+
   .app{
-    width:min(640px, 94vw);
+    width:min(660px, 94vw);
     padding:16px;
     position:relative;
     z-index:2;
@@ -172,7 +203,7 @@
     gap:10px;
   }
 
-  /* gift box (clickable) */
+  /* Gift box */
   .giftWrap{
     width:320px;
     height:295px;
@@ -181,7 +212,6 @@
     -webkit-tap-highlight-color: transparent;
     cursor:pointer;
   }
-  .giftWrap:active{ transform: scale(.995); }
 
   .giftBox{
     position:absolute;
@@ -258,16 +288,12 @@
   .open .lid{ top:34px; transform: rotateX(78deg); }
   .open .bow{ top:16px; transform: translateX(-50%) rotate(-7deg); }
 
-  /* little "bounce" hint on unopened box */
-  .nudge{
-    animation: nudge 1.9s ease-in-out infinite;
-  }
+  .nudge{ animation: nudge 1.9s ease-in-out infinite; }
   @keyframes nudge{
     0%,100%{ transform: translateY(0); }
     50%{ transform: translateY(-4px); }
   }
 
-  /* kitten pop */
   .kittyInBox{
     position:absolute;
     left:50%;
@@ -297,120 +323,135 @@
   }
   .hint.on{ opacity:1; transform: translateY(0); }
 
-  /* runner */
-  .arena{
-    position:fixed;
-    inset:0;
-    pointer-events:none;
-    z-index:10;
-  }
-  .runner{
-    position:absolute;
-    width:150px; height:150px; /* big tap area */
-    padding:18px;
-    pointer-events:auto;
-    cursor:pointer;
-    filter: drop-shadow(0 18px 20px rgba(0,0,0,.12));
-  }
-
-  /* inside tiles */
-  .grid{
-    display:grid;
-    grid-template-columns: repeat(2, minmax(0,1fr));
-    gap:12px;
-  }
-  .tile{
-    padding:14px 12px;
-    border-radius:18px;
-    border:1px solid rgba(0,0,0,.08);
-    background:rgba(255,255,255,.68);
-    box-shadow: 0 10px 25px rgba(0,0,0,.07);
-    cursor:pointer;
-    transition: transform .14s, filter .14s;
-    min-height:96px;
-    display:flex;
-    flex-direction:column;
-    justify-content:center;
-    align-items:center;
-    gap:6px;
+  /* Story Mode */
+  .storyWrap{
     position:relative;
     overflow:hidden;
-  }
-  .tile:hover{ transform: translateY(-1px); }
-  .tile:active{ transform: scale(.985); }
-
-  .tile::after{
-    content:"";
-    position:absolute;
-    top:-30%;
-    left:-60%;
-    width:70%;
-    height:160%;
-    background:linear-gradient(90deg, transparent, rgba(255,255,255,.60), transparent);
-    transform: rotate(18deg);
-    animation: shine 3.6s ease-in-out infinite;
-    opacity:.55;
-    pointer-events:none;
-  }
-  @keyframes shine{
-    0%{ left:-60%; }
-    55%{ left:120%; }
-    100%{ left:120%; }
-  }
-
-  .emoji{ font-size:26px; }
-  .tile small{ color:var(--muted); font-weight:650; letter-spacing:.1px; }
-
-  /* message popup (does NOT break clicks) */
-  .popup{
-    margin-top:12px;
-    padding:14px;
     border-radius:18px;
-    background:rgba(255,255,255,.82);
     border:1px solid rgba(0,0,0,.06);
+    background:rgba(255,255,255,.65);
     box-shadow: 0 12px 30px rgba(0,0,0,.07);
-    min-height:96px;
+    min-height:220px;
+  }
+
+  .storyTrack{
     display:flex;
+    width:100%;
+    transition: transform .55s cubic-bezier(.2,.95,.2,1);
+    will-change: transform;
+  }
+
+  .slide{
+    width:100%;
+    flex:0 0 100%;
+    padding:18px;
+    display:flex;
+    flex-direction:column;
     align-items:center;
     justify-content:center;
     text-align:center;
-    font-size:19px;
-    line-height:1.55;
+    gap:10px;
     position:relative;
   }
-  .msgText{
-    display:inline-block;
-    will-change: transform, opacity;
-  }
-  .msgAnim{
-    animation: msgWiggle .85s ease;
-  }
-  @keyframes msgWiggle{
-    0%{opacity:0; transform:translateY(12px) rotate(-1deg) scale(.98);}
-    55%{opacity:1; transform:translateY(-2px) rotate(1deg) scale(1.02);}
-    100%{opacity:1; transform:translateY(0) rotate(0) scale(1);}
-  }
 
-  /* final */
-  .finalBig{
-    font-size:32px;
-    font-weight:950;
-    margin:4px 0 10px;
-  }
-  .namePill{
-    display:inline-block;
-    padding:4px 12px;
-    border-radius:999px;
-    background:linear-gradient(90deg, rgba(255,179,199,.65), rgba(216,199,255,.65));
+  .iconSlot{
+    width:64px;
+    height:64px;
+    border-radius:18px;
+    background: linear-gradient(90deg, rgba(255,179,199,.45), rgba(191,234,216,.45));
     border:1px solid rgba(0,0,0,.06);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    overflow:hidden;
+  }
+  .iconSlot img{
+    width:100%;
+    height:100%;
+    object-fit:contain;
+    pointer-events:none;
+  }
+  .iconSlot .fallback{
+    font-size:32px;
   }
 
-  #confetti{
-    position:fixed;
-    inset:0;
+  .bigLine{
+    font-size:22px;
+    font-weight:900;
+    line-height:1.25;
+  }
+  .smallLine{
+    color:var(--muted);
+    font-size:13px;
+    margin-top:-4px;
+  }
+
+  .dots{
+    display:flex;
+    gap:7px;
+    justify-content:center;
+    margin-top:10px;
+  }
+  .dot{
+    width:8px;
+    height:8px;
+    border-radius:999px;
+    background: rgba(0,0,0,.18);
+    transition: transform .2s, background .2s;
+  }
+  .dot.on{
+    background: rgba(0,0,0,.55);
+    transform: scale(1.25);
+  }
+
+  /* tiny fx particles */
+  .fxParticle{
+    position:absolute;
+    font-size:18px;
+    opacity:0;
+    transform: translate(-50%,-50%) scale(.8);
+    animation: popFade 900ms ease forwards;
+    filter: drop-shadow(0 10px 16px rgba(0,0,0,.10));
+  }
+  @keyframes popFade{
+    0%{opacity:0; transform:translate(-50%,-50%) scale(.7) rotate(-6deg);}
+    25%{opacity:1;}
+    100%{opacity:0; transform:translate(-50%,-85%) scale(1.15) rotate(8deg);}
+  }
+
+  /* moon overlay */
+  .moonDim{
+    position:fixed; inset:0;
+    background: rgba(40,40,60,.18);
+    opacity:0;
+    animation: dimInOut 1200ms ease forwards;
+    z-index:8;
     pointer-events:none;
-    z-index:1;
-    display:none;
+  }
+  @keyframes dimInOut{
+    0%{opacity:0;}
+    30%{opacity:1;}
+    100%{opacity:0;}
+  }
+  .moonRing{
+    position:fixed;
+    left:50%;
+    top:22%;
+    width:170px; height:170px;
+    border-radius:50%;
+    transform:translate(-50%,-50%) scale(.9);
+    box-shadow:
+      0 0 30px 10px rgba(216,199,255,.35),
+      0 0 60px 20px rgba(255,179,199,.18);
+    opacity:0;
+    animation: moonPulse 1200ms ease forwards;
+    z-index:9;
+    pointer-events:none;
+  }
+  @keyframes moonPulse{
+    0%{opacity:0; transform:translate(-50%,-50%) scale(.85);}
+    35%{opacity:1; transform:translate(-50%,-50%) scale(1);}
+    100%{opacity:0; transform:translate(-50%,-50%) scale(1.12);}
   }
 </style>
 </head>
@@ -422,6 +463,7 @@
 
 <canvas id="confetti"></canvas>
 <div class="arena" id="arena"></div>
+<div class="fxLayer" id="fxLayer"></div>
 
 <div class="app">
   <div class="card">
@@ -433,10 +475,10 @@
       <div class="badge" id="badge">1/3</div>
     </div>
 
-    <!-- Screen 1 -->
+    <!-- Screen 1: Gift -->
     <div class="screen active" id="s1">
       <div class="stage">
-        <div class="giftWrap nudge" id="giftWrap" aria-label="gift box">
+        <div class="giftWrap nudge" id="giftWrap">
           <div class="bow"><div class="knot"></div></div>
           <div class="lid"></div>
 
@@ -451,64 +493,104 @@
         <div class="hint" id="hint">catch kitten (tap it / tap anywhere / or press catch)</div>
 
         <div class="nav">
-          <button class="btnGhost" id="back1" disabled>back</button>
+          <button class="btnGhost" id="restartBtn" style="flex:1">restart</button>
           <button class="btnGhost" id="catchBtn" style="flex:1">catch</button>
           <button class="btn" id="openBtn" style="flex:1.2">open</button>
         </div>
       </div>
     </div>
 
-    <!-- Screen 2 -->
+    <!-- Screen 2: Story mode -->
     <div class="screen" id="s2">
-      <p class="sub" style="margin-top:0">open them in order if you want 😼</p>
+      <p class="sub" style="margin-top:0">No menu. Just vibes. Tap next 😼</p>
 
-      <div class="grid" id="grid">
-        <!-- ordered -->
-        <div class="tile" data-msg="You Day!!!!">
-          <div class="emoji">⭐</div>
-          <small>stars</small>
-        </div>
-        <div class="tile" data-msg="you act tough but care about everything">
-          <div class="emoji">🎀</div>
-          <small>ribbon</small>
-        </div>
-        <div class="tile" data-msg="you notice people before they notice you">
-          <div class="emoji">📝</div>
-          <small>note</small>
-        </div>
-        <div class="tile" data-msg="21 now — i was here first 😼">
-          <div class="emoji">🐾</div>
-          <small>paw</small>
-        </div>
-        <div class="tile" data-msg="i respect you more than i say">
-          <div class="emoji">🧁</div>
-          <small>cupcake</small>
-        </div>
-        <div class="tile" data-msg="may Allah put barakah in your time and ease what comes next">
-          <div class="emoji">🌙</div>
-          <small>dua</small>
+      <div class="storyWrap">
+        <div class="storyTrack" id="track">
+
+          <!-- Slide 1 -->
+          <div class="slide" data-key="sparkles">
+            <div class="iconSlot">
+              <!-- Replace with your file sparkles.png -->
+              <img src="sparkles.png" alt="" onerror="this.remove(); this.parentNode.querySelector('.fallback').style.display='block';">
+              <div class="fallback">✨</div>
+            </div>
+            <div class="bigLine">You Day!!!!</div>
+            <div class="smallLine">sparkles</div>
+          </div>
+
+          <!-- Slide 2 -->
+          <div class="slide" data-key="paw-prints">
+            <div class="iconSlot">
+              <img src="paw-prints.png" alt="" onerror="this.remove(); this.parentNode.querySelector('.fallback').style.display='block';">
+              <div class="fallback">🐾</div>
+            </div>
+            <div class="bigLine">Oldie, you’re 21. Don’t worry I’ll always be here before you 😼</div>
+            <div class="smallLine">paw-prints</div>
+          </div>
+
+          <!-- Slide 3 -->
+          <div class="slide" data-key="ribbon-pop">
+            <div class="iconSlot">
+              <img src="ribbon-pop.png" alt="" onerror="this.remove(); this.parentNode.querySelector('.fallback').style.display='block';">
+              <div class="fallback">🎀</div>
+            </div>
+            <div class="bigLine">You act tough, but you actually care about everything.</div>
+            <div class="smallLine">ribbon-pop</div>
+          </div>
+
+          <!-- Slide 4 -->
+          <div class="slide" data-key="note-slide">
+            <div class="iconSlot">
+              <img src="note-slide.png" alt="" onerror="this.remove(); this.parentNode.querySelector('.fallback').style.display='block';">
+              <div class="fallback">📝</div>
+            </div>
+            <div class="bigLine">You bring the energy wherever you go.</div>
+            <div class="smallLine">note-slide</div>
+          </div>
+
+          <!-- Slide 5 -->
+          <div class="slide" data-key="crown">
+            <div class="iconSlot">
+              <img src="crown.png" alt="" onerror="this.remove(); this.parentNode.querySelector('.fallback').style.display='block';">
+              <div class="fallback">👑</div>
+            </div>
+            <div class="bigLine">I respect you more than I say.</div>
+            <div class="smallLine">crown</div>
+          </div>
+
+          <!-- Slide 6 -->
+          <div class="slide" data-key="moon-glow">
+            <div class="iconSlot">
+              <img src="moon-glow.png" alt="" onerror="this.remove(); this.parentNode.querySelector('.fallback').style.display='block';">
+              <div class="fallback">🌙</div>
+            </div>
+            <div class="bigLine">May Allah put barakah in your time and ease what comes next.</div>
+            <div class="smallLine">moon-glow</div>
+          </div>
+
         </div>
       </div>
 
-      <div class="popup" id="popup">
-        <span class="msgText" id="msgText">tap a tile</span>
-      </div>
+      <div class="dots" id="dots"></div>
 
       <div class="nav">
-        <button class="btnGhost" id="back2">back</button>
-        <button class="btn" id="finishBtn">finish</button>
+        <button class="btnGhost" id="backToGift">back</button>
+        <button class="btnGhost" id="prevBtn">prev</button>
+        <button class="btn" id="nextBtn">next</button>
       </div>
     </div>
 
-    <!-- Screen 3 -->
+    <!-- Screen 3: Final -->
     <div class="screen" id="s3">
       <div class="stage">
-        <div class="finalBig">Happy Birth <span class="namePill">Fatoom</span></div>
+        <div style="font-size:32px; font-weight:950; margin:4px 0 10px;">
+          Happy Birth <span style="display:inline-block; padding:4px 12px; border-radius:999px; background:linear-gradient(90deg, rgba(255,179,199,.65), rgba(216,199,255,.65)); border:1px solid rgba(0,0,0,.06);">Fatoom</span>
+        </div>
         <p class="sub" style="font-size:16px; margin:0; max-width:38ch;">
-          may Allah put barakah in your time and ease what comes next
+          May Allah put barakah in your time and ease what comes next.
         </p>
         <div class="nav">
-          <button class="btnGhost" id="back3">back</button>
+          <button class="btnGhost" id="backToStory">back</button>
           <button class="btn" id="boomBtn">boom again</button>
         </div>
       </div>
@@ -518,7 +600,7 @@
 </div>
 
 <script>
-  // ===== background stars =====
+  // ===== Stars =====
   (function makeStars(){
     const count = 18;
     for(let i=0;i<count;i++){
@@ -547,7 +629,7 @@
     }
   }
 
-  // ===== navigation =====
+  // ===== Screens =====
   const screens = [document.getElementById("s1"), document.getElementById("s2"), document.getElementById("s3")];
   const titleEl = document.getElementById("title");
   const subEl = document.getElementById("sub");
@@ -556,25 +638,16 @@
   function setScreen(i){
     screens.forEach((s, idx)=> s.classList.toggle("active", idx===i));
     badgeEl.textContent = (i+1)+"/3";
-
-    if(i===0){
-      titleEl.textContent="gift";
-      subEl.textContent="tap the box";
-    }
-    if(i===1){
-      titleEl.textContent="inside";
-      subEl.textContent="tap items";
-    }
-    if(i===2){
-      titleEl.textContent="boom";
-      subEl.textContent="happy 21st";
-    }
+    if(i===0){ titleEl.textContent="gift"; subEl.textContent="tap the box"; }
+    if(i===1){ titleEl.textContent="story"; subEl.textContent="tap next"; }
+    if(i===2){ titleEl.textContent="boom"; subEl.textContent="happy 21st"; }
   }
 
-  // ===== gift + kitten sequence (resettable) =====
+  // ===== Gift + kitten =====
   const giftWrap = document.getElementById("giftWrap");
   const openBtn = document.getElementById("openBtn");
   const catchBtn = document.getElementById("catchBtn");
+  const restartBtn = document.getElementById("restartBtn");
   const kittyInBox = document.getElementById("kittyInBox");
   const hint = document.getElementById("hint");
   const arena = document.getElementById("arena");
@@ -597,28 +670,25 @@
   }
 
   function resetSequence(){
-    // stop anything running
     stopRunner();
-
     opened = false;
     openBtn.disabled = false;
     openBtn.textContent = "open";
-
-    // close box + reset visuals
     giftWrap.classList.remove("open");
     giftWrap.classList.add("nudge");
     hint.classList.remove("on");
     kittyInBox.classList.remove("pop");
     kittyInBox.style.display = "block";
     kittyInBox.style.opacity = "0";
-
-    // restore header
     subEl.textContent = "tap the box";
+    setScreen(0);
+    setSlide(0, true);
   }
 
   function catchKitten(){
     stopRunner();
     setScreen(1);
+    playSlideFX(currentSlide);
   }
 
   function startRunner(){
@@ -630,12 +700,9 @@
 
     let x = window.innerWidth*0.52;
     let y = window.innerHeight*0.46;
-
-    // mobile-friendly speeds
     let vx = rand(2.0, 3.0) * (Math.random()<0.5 ? -1 : 1);
     let vy = rand(1.6, 2.4) * (Math.random()<0.5 ? -1 : 1);
 
-    // little pause moments so it feels playful and clickable
     let lastPause = performance.now();
     let pausedUntil = 0;
 
@@ -646,13 +713,9 @@
       }
       const paused = now < pausedUntil;
 
-      if(!paused){
-        x += vx; y += vy;
-      }
+      if(!paused){ x += vx; y += vy; }
 
-      const size = 150;
-      const pad = 8;
-
+      const size = 150, pad = 8;
       if(x < pad){ x = pad; vx *= -1; }
       if(x > window.innerWidth - size - pad){ x = window.innerWidth - size - pad; vx *= -1; }
       if(y < pad){ y = pad; vy *= -1; }
@@ -667,7 +730,6 @@
 
     runner.addEventListener("click", catchKitten);
 
-    // tap anywhere backup while runner exists
     tapAnyHandler = () => { if(runner) catchKitten(); };
     document.addEventListener("pointerdown", tapAnyHandler);
   }
@@ -675,77 +737,154 @@
   function openGift(){
     if(opened) return;
     opened = true;
-
     giftWrap.classList.add("open");
     giftWrap.classList.remove("nudge");
-
     openBtn.disabled = true;
     openBtn.textContent = "opened";
-
-    // pop kitten
     kittyInBox.classList.add("pop");
     kittyInBox.style.opacity = "1";
 
     setTimeout(()=>{
       hint.classList.add("on");
-      subEl.textContent = "catch kitten (tap it / tap anywhere / or press catch)";
+      subEl.textContent = "catch kitten";
       kittyInBox.style.display = "none";
       startRunner();
     }, 850);
   }
 
-  // Open by tapping the box OR the button
   giftWrap.addEventListener("click", openGift);
   openBtn.addEventListener("click", (e)=>{ e.stopPropagation(); openGift(); });
-
-  // Catch button always works (and doesn't soft-lock)
   catchBtn.addEventListener("click", ()=>{ if(opened) catchKitten(); });
+  restartBtn.addEventListener("click", resetSequence);
 
-  // ===== inside screen logic =====
-  const msgText = document.getElementById("msgText");
-  const tiles = Array.from(document.querySelectorAll(".tile"));
-  let openedCount = 0;
+  // ===== Story slides =====
+  const track = document.getElementById("track");
+  const slides = Array.from(document.querySelectorAll(".slide"));
+  const dotsWrap = document.getElementById("dots");
+  const prevBtn = document.getElementById("prevBtn");
+  const nextBtn = document.getElementById("nextBtn");
 
-  function setPopup(text){
-    msgText.textContent = text;
+  let currentSlide = 0;
 
-    // re-trigger animation without replacing nodes (fixes the "one click only" bug)
-    msgText.classList.remove("msgAnim");
-    void msgText.offsetWidth; // force reflow
-    msgText.classList.add("msgAnim");
+  function buildDots(){
+    dotsWrap.innerHTML = "";
+    slides.forEach((_, i)=>{
+      const d = document.createElement("div");
+      d.className = "dot" + (i===0 ? " on" : "");
+      dotsWrap.appendChild(d);
+    });
+  }
+  buildDots();
+
+  function setSlide(i, silent=false){
+    currentSlide = Math.max(0, Math.min(slides.length-1, i));
+    track.style.transform = `translateX(${-currentSlide * 100}%)`;
+
+    Array.from(dotsWrap.children).forEach((d, idx)=> d.classList.toggle("on", idx===currentSlide));
+
+    prevBtn.disabled = currentSlide === 0;
+    nextBtn.textContent = (currentSlide === slides.length-1) ? "finish" : "next";
+
+    if(!silent) playSlideFX(currentSlide);
   }
 
-  tiles.forEach((t, idx)=>{
-    t.addEventListener("click", ()=>{
-      const msg = t.getAttribute("data-msg");
-
-      if(!t.dataset.opened){
-        t.dataset.opened="1";
-        openedCount++;
-        t.style.filter="saturate(1.15)";
-      }
-
-      if(idx === 0) burstStars(); // "stars" tile
-
-      setPopup(msg);
-
-      t.animate(
-        [{transform:"scale(1)"},{transform:"scale(1.03)"},{transform:"scale(1)"}],
-        {duration:260, easing:"ease-out"}
-      );
-    });
-  });
-
-  document.getElementById("finishBtn").addEventListener("click", ()=>{
-    if(openedCount < 3){
-      setPopup("open at least 3 things first 😭");
+  prevBtn.addEventListener("click", ()=> setSlide(currentSlide - 1));
+  nextBtn.addEventListener("click", ()=>{
+    if(currentSlide === slides.length - 1){
+      setScreen(2);
+      startConfetti(1600);
       return;
     }
-    setScreen(2);
-    startConfetti(1500);
+    setSlide(currentSlide + 1);
   });
 
-  // ===== confetti =====
+  document.getElementById("backToGift").addEventListener("click", resetSequence);
+  document.getElementById("backToStory").addEventListener("click", ()=> setScreen(1));
+
+  // swipe on mobile
+  let sx=0, sy=0;
+  const storyWrap = document.querySelector(".storyWrap");
+  storyWrap.addEventListener("touchstart", (e)=>{
+    sx = e.touches[0].clientX;
+    sy = e.touches[0].clientY;
+  }, {passive:true});
+  storyWrap.addEventListener("touchend", (e)=>{
+    const ex = e.changedTouches[0].clientX;
+    const ey = e.changedTouches[0].clientY;
+    const dx = ex - sx;
+    const dy = ey - sy;
+    if(Math.abs(dx) > 45 && Math.abs(dy) < 60){
+      if(dx < 0) nextBtn.click();
+      else prevBtn.click();
+    }
+  });
+
+  // ===== Slide FX =====
+  const fxLayer = document.getElementById("fxLayer");
+
+  function spawnParticles(symbols, count, cx, cy){
+    for(let i=0;i<count;i++){
+      const p = document.createElement("div");
+      p.className = "fxParticle";
+      p.textContent = symbols[Math.floor(Math.random()*symbols.length)];
+      const dx = (Math.random()*180 - 90);
+      const dy = (Math.random()*120 - 60);
+      p.style.left = (cx + dx) + "px";
+      p.style.top  = (cy + dy) + "px";
+      p.style.animationDelay = (Math.random()*120) + "ms";
+      fxLayer.appendChild(p);
+      setTimeout(()=>p.remove(), 1000);
+    }
+  }
+
+  function slideCenter(){
+    const r = storyWrap.getBoundingClientRect();
+    return { cx: r.left + r.width/2, cy: r.top + r.height/2 };
+  }
+
+  function playSlideFX(i){
+    const key = slides[i].dataset.key;
+    const {cx, cy} = slideCenter();
+
+    if(key === "sparkles"){
+      spawnParticles(["✨","⭐","💫"], 16, cx, cy);
+      burstStars();
+    }
+    if(key === "paw-prints"){
+      const y = window.innerHeight * 0.74;
+      for(let k=0;k<9;k++){
+        const p = document.createElement("div");
+        p.className = "fxParticle";
+        p.textContent = "🐾";
+        p.style.left = (50 + k*48) + "px";
+        p.style.top  = (y + (Math.random()*18 - 9)) + "px";
+        p.style.animationDuration = "850ms";
+        fxLayer.appendChild(p);
+        setTimeout(()=>p.remove(), 900);
+      }
+    }
+    if(key === "ribbon-pop"){
+      spawnParticles(["🎀","💗","🫧"], 14, cx, cy);
+    }
+    if(key === "note-slide"){
+      spawnParticles(["📝","✨","📌"], 12, cx, cy);
+    }
+    if(key === "crown"){
+      spawnParticles(["👑","✨","⭐"], 16, cx, cy);
+    }
+    if(key === "moon-glow"){
+      const dim = document.createElement("div");
+      dim.className = "moonDim";
+      document.body.appendChild(dim);
+      const ring = document.createElement("div");
+      ring.className = "moonRing";
+      document.body.appendChild(ring);
+      spawnParticles(["🌙","✨"], 12, cx, cy);
+      setTimeout(()=>{ dim.remove(); ring.remove(); }, 1300);
+    }
+  }
+
+  // ===== Confetti =====
   const canvas = document.getElementById("confetti");
   const ctx = canvas.getContext("2d");
   let W,H,pieces=[],running=false;
@@ -796,7 +935,7 @@
   function startConfetti(ms=1400){
     canvas.style.display="block";
     running=true;
-    makeConfetti(300);
+    makeConfetti(320);
     draw();
     setTimeout(()=>{
       running=false;
@@ -807,21 +946,7 @@
 
   document.getElementById("boomBtn").addEventListener("click", ()=> startConfetti(1500));
 
-  // ===== back buttons (REAL reset) =====
-  document.getElementById("back1").addEventListener("click", ()=>{
-    resetSequence();
-    setScreen(0);
-  });
-  document.getElementById("back2").addEventListener("click", ()=>{
-    // Going back to gift should replay fully
-    resetSequence();
-    setScreen(0);
-  });
-  document.getElementById("back3").addEventListener("click", ()=>{
-    setScreen(1);
-  });
-
-  // ===== boot =====
+  // ===== Boot =====
   setScreen(0);
   resetSequence();
 </script>
