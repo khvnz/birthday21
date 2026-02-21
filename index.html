@@ -298,15 +298,14 @@
   }
   .runner{
     position:absolute;
-    width:104px;
-    height:104px;
+    width:140px;         /* BIG hitbox */
+    height:140px;        /* BIG hitbox */
+    padding:18px;
     pointer-events:auto;
     cursor:pointer;
     filter: drop-shadow(0 18px 20px rgba(0,0,0,.12));
     transform: translate(0,0);
-    transition: filter .12s;
   }
-  .runner:active{ filter: drop-shadow(0 12px 14px rgba(0,0,0,.12)); }
 
   /* items screen */
   .grid{
@@ -444,7 +443,7 @@
           <img class="kittyInBox" id="kittyInBox" src="kitten.png" alt="kitten" />
         </div>
 
-        <div class="hint" id="hint">catch the kitten (tap it)</div>
+        <div class="hint" id="hint">tap kitten (or tap anywhere)</div>
 
         <div class="nav">
           <button class="btnGhost" id="back1" disabled>back</button>
@@ -567,8 +566,20 @@
   let opened = false;
   let runner = null;
   let raf = null;
+  let tapAnywhereEnabled = false;
 
   function rand(min,max){ return Math.random()*(max-min)+min; }
+
+  function stopRunner(){
+    if(raf) cancelAnimationFrame(raf);
+    raf = null;
+    if(runner){ runner.remove(); runner=null; }
+  }
+
+  function catchKitten(){
+    stopRunner();
+    setScreen(1);
+  }
 
   function startRunner(){
     // create runner img
@@ -578,18 +589,31 @@
     runner.className = "runner";
     arena.appendChild(runner);
 
-    // initial position + velocity
+    // slower speed on purpose (mobile friendly)
     let x = window.innerWidth*0.52;
     let y = window.innerHeight*0.46;
-    let vx = rand(4.2, 6.1) * (Math.random()<0.5 ? -1 : 1);
-    let vy = rand(3.2, 5.1) * (Math.random()<0.5 ? -1 : 1);
+    let vx = rand(2.0, 3.1) * (Math.random()<0.5 ? -1 : 1);
+    let vy = rand(1.6, 2.6) * (Math.random()<0.5 ? -1 : 1);
 
-    function step(){
-      x += vx;
-      y += vy;
+    // pause tiny moments so it's not frustrating
+    let lastPause = performance.now();
+    let pausedUntil = 0;
 
-      const size = 104;
-      const pad = 14;
+    function step(now){
+      // periodic pauses
+      if(now - lastPause > 900){
+        pausedUntil = now + 220;
+        lastPause = now;
+      }
+      const paused = now < pausedUntil;
+
+      if(!paused){
+        x += vx;
+        y += vy;
+      }
+
+      const size = 140; // hitbox size
+      const pad = 10;
 
       if(x < pad){ x = pad; vx *= -1; }
       if(x > window.innerWidth - size - pad){ x = window.innerWidth - size - pad; vx *= -1; }
@@ -597,24 +621,25 @@
       if(y > window.innerHeight - size - pad){ y = window.innerHeight - size - pad; vy *= -1; }
 
       // little wiggle so it feels alive
-      const wiggle = Math.sin(Date.now()/90) * 2.2;
+      const wiggle = Math.sin(now/120) * (paused ? 1.2 : 2.2);
       runner.style.transform = `translate(${x}px, ${y}px) rotate(${wiggle}deg) scaleX(${vx>0 ? 1 : -1})`;
 
       raf = requestAnimationFrame(step);
     }
+    raf = requestAnimationFrame(step);
 
-    step();
+    // click kitten -> next
+    runner.addEventListener("click", catchKitten);
 
-    runner.addEventListener("click", ()=>{
-      stopRunner();
-      setScreen(1);
-    });
-  }
-
-  function stopRunner(){
-    if(raf) cancelAnimationFrame(raf);
-    raf = null;
-    if(runner){ runner.remove(); runner=null; }
+    // tap anywhere backup (ONLY while kitten is running)
+    if(!tapAnywhereEnabled){
+      tapAnywhereEnabled = true;
+      document.addEventListener("pointerdown", function onTapAnywhere(){
+        if(runner){ catchKitten(); }
+        document.removeEventListener("pointerdown", onTapAnywhere);
+        tapAnywhereEnabled = false;
+      });
+    }
   }
 
   openBtn.addEventListener("click", ()=>{
@@ -629,49 +654,38 @@
     kittyInBox.classList.add("pop");
 
     setTimeout(()=>{
-      // show hint + run
       hint.classList.add("on");
-      subEl.textContent = "tap the kitten";
+      subEl.textContent = "tap kitten (or tap anywhere)";
       kittyInBox.style.display = "none"; // switch to runner
       startRunner();
     }, 850);
   });
 
   // ---------- items/messages ----------
-  const popup = document.getElementById("popup");
-  const msgText = document.getElementById("msgText");
+  const msgTextEl = document.getElementById("msgText");
   const tiles = Array.from(document.querySelectorAll(".tile"));
   let openedCount = 0;
 
   function setPopup(text){
-    msgText.textContent = text;
-    // restart animation by cloning node
-    const clone = msgText.cloneNode(true);
-    msgText.parentNode.replaceChild(clone, msgText);
-    // update reference
-    window.__msgText = clone;
+    const clone = msgTextEl.cloneNode(true);
+    clone.textContent = text;
+    msgTextEl.parentNode.replaceChild(clone, msgTextEl);
   }
-  // keep reference consistent
-  window.__msgText = msgText;
 
   tiles.forEach(t=>{
     t.addEventListener("click", ()=>{
       const msg = t.getAttribute("data-msg");
 
-      // track opens
       if(!t.dataset.opened){
         t.dataset.opened = "1";
         openedCount++;
         t.style.filter = "saturate(1.15)";
       }
 
-      // special effects for first message
       if(msg === "You Day!!!!") burstStars();
 
-      // animated popup text
       setPopup(msg);
 
-      // tiny bounce feedback on tile
       t.animate([
         { transform:"scale(1)" },
         { transform:"scale(1.03)" },
