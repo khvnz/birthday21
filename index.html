@@ -3,21 +3,24 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>gift</title>
+<title>You Day</title>
+
 <style>
   :root{
-    --bg1:#fff2f4;
-    --bg2:#f6fff8;
-    --card: rgba(255,255,255,.78);
-    --ink:#222;
-    --muted:#666;
-    --shadow: 0 18px 45px rgba(0,0,0,.10);
-    --radius: 22px;
+    --bg1:#ffe8ee;
+    --bg2:#eafff4;
+    --bg3:#f2ecff;
+    --card: rgba(255,255,255,.80);
+    --ink:#1f1f1f;
+    --muted:#6a6a6a;
     --pink:#ffb3c7;
     --peach:#ffd2a6;
     --mint:#bfead8;
     --lav:#d8c7ff;
+    --shadow: 0 18px 45px rgba(0,0,0,.12);
+    --radius: 24px;
   }
+
   *{box-sizing:border-box}
   body{
     margin:0;
@@ -30,13 +33,50 @@
     background:
       radial-gradient(circle at 15% 10%, var(--bg1) 0%, transparent 55%),
       radial-gradient(circle at 85% 15%, var(--bg2) 0%, transparent 55%),
-      radial-gradient(circle at 50% 100%, #fff 0%, #f7f2ff 60%, #f7f7ff 100%);
+      radial-gradient(circle at 50% 110%, #fff 0%, var(--bg3) 60%, #f7f7ff 100%);
     overflow:hidden;
   }
 
+  /* subtle floating blobs so it feels alive */
+  .blob{
+    position:fixed;
+    width:240px; height:240px;
+    border-radius:50%;
+    filter: blur(22px);
+    opacity:.22;
+    z-index:0;
+    animation: blobFloat 10s ease-in-out infinite;
+    pointer-events:none;
+  }
+  @keyframes blobFloat{
+    0%{ transform: translate(0,0) scale(1); }
+    50%{ transform: translate(30px,-26px) scale(1.12); }
+    100%{ transform: translate(0,0) scale(1); }
+  }
+
+  /* twinkling stars */
+  .star{
+    position:fixed;
+    width:6px;
+    height:6px;
+    border-radius:50%;
+    background:white;
+    box-shadow:0 0 10px 3px rgba(255,255,255,.85);
+    opacity:.25;
+    animation: twinkle 2.6s infinite ease-in-out;
+    pointer-events:none;
+    z-index:0;
+  }
+  @keyframes twinkle{
+    0%{opacity:.15; transform:scale(.8);}
+    50%{opacity:1; transform:scale(1.55);}
+    100%{opacity:.15; transform:scale(.8);}
+  }
+
+  /* top-level wrapper */
   .app{
-    width:min(520px, 92vw);
-    padding:18px;
+    width:min(600px, 94vw);
+    padding:16px;
     position:relative;
     z-index:2;
   }
@@ -47,16 +87,30 @@
     border-radius:var(--radius);
     box-shadow: var(--shadow);
     padding:18px;
-    backdrop-filter: blur(8px);
+    backdrop-filter: blur(10px);
   }
 
   .top{
     display:flex;
-    align-items:center;
+    align-items:flex-start;
     justify-content:space-between;
     gap:12px;
-    margin-bottom:14px;
+    margin-bottom:12px;
   }
+
+  .title{
+    font-size:18px;
+    font-weight:850;
+    letter-spacing:.2px;
+  }
+
+  .sub{
+    margin:6px 0 0;
+    color:var(--muted);
+    font-size:14px;
+    line-height:1.45;
+  }
+
   .badge{
     font-size:12px;
     padding:8px 10px;
@@ -64,106 +118,129 @@
     background:linear-gradient(90deg, rgba(255,179,199,.55), rgba(191,234,216,.55));
     border:1px solid rgba(0,0,0,.06);
     white-space:nowrap;
+    user-select:none;
   }
-  .title{ font-size:18px; font-weight:700; letter-spacing:.2px; }
-  .sub{ margin:8px 0 0; color:var(--muted); font-size:14px; line-height:1.5; }
 
+  /* screens */
   .screen{ display:none; }
-  .screen.active{ display:block; }
+  .screen.active{
+    display:block;
+    animation: screenIn .45s ease;
+  }
+  @keyframes screenIn{
+    from{ opacity:0; transform: translateY(10px); }
+    to{ opacity:1; transform: translateY(0); }
+  }
 
-  /* Buttons */
+  /* nav buttons */
+  .nav{
+    display:flex;
+    gap:10px;
+    margin-top:12px;
+  }
   .btn{
-    margin-top:14px;
     width:100%;
     padding:14px 14px;
     border:none;
     border-radius:16px;
     cursor:pointer;
-    font-weight:650;
+    font-weight:780;
     font-size:15px;
-    background:linear-gradient(90deg, rgba(255,179,199,.85), rgba(191,234,216,.85));
-    box-shadow: 0 12px 30px rgba(0,0,0,.08);
-    transition:.18s transform;
+    background:linear-gradient(90deg, rgba(255,179,199,.92), rgba(191,234,216,.92));
+    box-shadow: 0 12px 30px rgba(0,0,0,.09);
+    transition:.16s transform, .16s filter;
   }
+  .btn:hover{ filter:saturate(1.1); }
   .btn:active{ transform: scale(.98); }
+  .btn:disabled{ opacity:.5; cursor:not-allowed; }
 
-  /* Gift area */
+  .btnGhost{
+    width:auto;
+    padding:12px 14px;
+    border-radius:16px;
+    border:1px solid rgba(0,0,0,.10);
+    background:rgba(255,255,255,.55);
+    box-shadow:none;
+    font-weight:760;
+    cursor:pointer;
+    transition:.16s transform;
+  }
+  .btnGhost:active{ transform: scale(.98); }
+
   .stage{
     display:flex;
     flex-direction:column;
     align-items:center;
     justify-content:center;
     text-align:center;
-    padding:10px 0 0;
+    padding-top:6px;
+    gap:10px;
   }
 
+  /* gift box */
   .giftWrap{
-    width:240px;
-    height:240px;
+    width:300px;
+    height:280px;
     position:relative;
-    margin:8px auto 4px;
     user-select:none;
     -webkit-tap-highlight-color: transparent;
   }
-
   .giftBox{
     position:absolute;
-    left:36px; right:36px;
-    bottom:34px;
-    height:130px;
-    border-radius:20px;
+    left:52px; right:52px;
+    bottom:38px;
+    height:155px;
+    border-radius:24px;
     background:linear-gradient(180deg, #ffe7d8, #ffd7e5);
     box-shadow: 0 18px 40px rgba(0,0,0,.10);
     border:1px solid rgba(0,0,0,.05);
     overflow:hidden;
   }
-  .giftStripe{
-    position:absolute;
-    top:0; bottom:0;
+  .giftStripeV{
+    position:absolute; top:0; bottom:0;
     left:50%;
-    width:34px;
+    width:38px;
     transform:translateX(-50%);
-    background:linear-gradient(180deg, rgba(191,234,216,.95), rgba(216,199,255,.95));
+    background:linear-gradient(180deg, rgba(191,234,216,.98), rgba(216,199,255,.98));
   }
   .giftStripeH{
-    position:absolute;
-    left:0; right:0;
-    top:48px;
-    height:34px;
-    background:linear-gradient(90deg, rgba(191,234,216,.95), rgba(216,199,255,.95));
+    position:absolute; left:0; right:0;
+    top:58px;
+    height:38px;
+    background:linear-gradient(90deg, rgba(191,234,216,.98), rgba(216,199,255,.98));
   }
 
   .lid{
     position:absolute;
-    left:24px; right:24px;
-    top:64px;
-    height:66px;
-    border-radius:20px;
+    left:36px; right:36px;
+    top:82px;
+    height:78px;
+    border-radius:24px;
     background:linear-gradient(180deg, #ffe0ea, #ffd0de);
     box-shadow: 0 16px 34px rgba(0,0,0,.10);
     border:1px solid rgba(0,0,0,.05);
     transform-origin:center bottom;
-    transition: transform .65s cubic-bezier(.2,.9,.2,1), top .65s cubic-bezier(.2,.9,.2,1);
+    transition: transform .85s cubic-bezier(.2,.95,.2,1), top .85s cubic-bezier(.2,.95,.2,1);
     z-index:3;
   }
   .bow{
     position:absolute;
     left:50%;
-    top:36px;
-    width:86px;
-    height:48px;
+    top:44px;
+    width:108px;
+    height:60px;
     transform:translateX(-50%);
     z-index:4;
-    transition: transform .65s cubic-bezier(.2,.9,.2,1), top .65s cubic-bezier(.2,.9,.2,1);
+    transition: transform .85s cubic-bezier(.2,.95,.2,1), top .85s cubic-bezier(.2,.95,.2,1);
   }
   .bow:before, .bow:after{
     content:"";
     position:absolute;
-    width:42px;
-    height:34px;
-    top:8px;
-    border-radius:18px 18px 18px 6px;
-    background:linear-gradient(180deg, rgba(255,179,199,.95), rgba(255,210,166,.95));
+    width:52px;
+    height:42px;
+    top:10px;
+    border-radius:20px 20px 20px 8px;
+    background:linear-gradient(180deg, rgba(255,179,199,.98), rgba(255,210,166,.98));
     box-shadow: 0 10px 22px rgba(0,0,0,.08);
   }
   .bow:before{ left:0; transform:rotate(-10deg); }
@@ -171,86 +248,155 @@
   .knot{
     position:absolute;
     left:50%;
-    top:16px;
-    width:20px;
-    height:20px;
+    top:20px;
+    width:24px; height:24px;
     transform:translateX(-50%);
     border-radius:8px;
-    background:linear-gradient(180deg, rgba(255,210,166,.95), rgba(255,179,199,.95));
+    background:linear-gradient(180deg, rgba(255,210,166,.98), rgba(255,179,199,.98));
     box-shadow: 0 10px 20px rgba(0,0,0,.08);
   }
 
-  /* Open state */
-  .open .lid{
-    top:28px;
-    transform: rotateX(75deg);
-  }
-  .open .bow{
-    top:14px;
-    transform: translateX(-50%) rotate(-6deg);
-  }
+  .open .lid{ top:34px; transform: rotateX(78deg); }
+  .open .bow{ top:16px; transform: translateX(-50%) rotate(-7deg); }
 
-  /* Kitty */
-  .kitty{
+  /* kitten inside box before it runs */
+  .kittyInBox{
     position:absolute;
     left:50%;
-    bottom:84px;
-    transform:translate(-50%, 40px) scale(.9);
+    top:128px;
+    width:104px;
+    height:104px;
+    transform: translate(-50%, 36px) scale(.92);
     opacity:0;
-    font-size:64px;
     z-index:5;
-    cursor:pointer;
-    filter: drop-shadow(0 16px 22px rgba(0,0,0,.12));
-    -webkit-tap-highlight-color: transparent;
+    pointer-events:none;
+    filter: drop-shadow(0 18px 20px rgba(0,0,0,.12));
   }
+  @keyframes popOut{
+    0%{ opacity:0; transform: translate(-50%, 36px) scale(.92); }
+    45%{ opacity:1; transform: translate(-50%, -30px) scale(1.06); }
+    75%{ opacity:1; transform: translate(-50%, -10px) scale(1); }
+    100%{ opacity:1; transform: translate(-50%, -6px) scale(1); }
+  }
+  .kittyInBox.pop{ animation: popOut .75s cubic-bezier(.2,.95,.2,1) forwards; }
 
-  .kittyHint{
-    margin-top:8px;
+  .hint{
     font-size:13px;
     color:var(--muted);
-    opacity:.0;
-    transition: opacity .3s;
+    opacity:0;
+    transform: translateY(-2px);
+    transition: opacity .25s, transform .25s;
   }
+  .hint.on{ opacity:1; transform: translateY(0); }
 
-  /* Jump out */
-  @keyframes jumpOut{
-    0%{ transform:translate(-50%, 40px) scale(.9); opacity:0; }
-    35%{ transform:translate(-50%, -30px) scale(1.06); opacity:1; }
-    60%{ transform:translate(-50%, -10px) scale(1.0); opacity:1; }
-    100%{ transform:translate(-50%, -8px) scale(1.0); opacity:1; }
-  }
-
-  /* Run around (after jump) */
-  @keyframes runAround{
-    0%{ left:50%; top:110px; transform:translate(-50%,-50%) scale(1); }
-    20%{ left:15%; top:170px; transform:translate(-50%,-50%) scale(1) rotate(-3deg); }
-    45%{ left:82%; top:150px; transform:translate(-50%,-50%) scale(1) rotate(3deg); }
-    70%{ left:25%; top:105px; transform:translate(-50%,-50%) scale(1) rotate(-2deg); }
-    100%{ left:60%; top:135px; transform:translate(-50%,-50%) scale(1); }
-  }
-
-  .kitty.jump{ animation: jumpOut .7s cubic-bezier(.2,.9,.2,1) forwards; }
-  .kitty.run{
+  /* arena runner */
+  .arena{
     position:fixed;
-    animation: runAround 1.4s ease-in-out 0s 1 forwards;
+    inset:0;
+    pointer-events:none;
+    z-index:10;
+  }
+  .runner{
+    position:absolute;
+    width:104px;
+    height:104px;
+    pointer-events:auto;
+    cursor:pointer;
+    filter: drop-shadow(0 18px 20px rgba(0,0,0,.12));
+    transform: translate(0,0);
+    transition: filter .12s;
+  }
+  .runner:active{ filter: drop-shadow(0 12px 14px rgba(0,0,0,.12)); }
+
+  /* items screen */
+  .grid{
+    display:grid;
+    grid-template-columns: repeat(2, minmax(0,1fr));
+    gap:12px;
+  }
+  .tile{
+    padding:14px 12px;
+    border-radius:18px;
+    border:1px solid rgba(0,0,0,.08);
+    background:rgba(255,255,255,.66);
+    box-shadow: 0 10px 25px rgba(0,0,0,.07);
+    cursor:pointer;
+    transition: transform .14s, filter .14s;
+    min-height:96px;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    gap:6px;
+    position:relative;
+    overflow:hidden;
+  }
+  .tile:active{ transform: scale(.98); }
+
+  /* subtle animated shine */
+  .tile::after{
+    content:"";
+    position:absolute;
+    top:-30%;
+    left:-60%;
+    width:70%;
+    height:160%;
+    background:linear-gradient(90deg, transparent, rgba(255,255,255,.55), transparent);
+    transform: rotate(18deg);
+    animation: shine 3.6s ease-in-out infinite;
+    opacity:.55;
+  }
+  @keyframes shine{
+    0%{ left:-60%; }
+    55%{ left:120%; }
+    100%{ left:120%; }
   }
 
-  .hintOn{ opacity:1 !important; }
+  .emoji{ font-size:26px; }
+  .tile small{ color:var(--muted); }
 
-  /* Messages */
-  .msgBox{
-    min-height:140px;
+  /* message popup with animated text */
+  .popup{
+    margin-top:12px;
     padding:14px;
     border-radius:18px;
-    background:rgba(255,255,255,.70);
-    border:1px solid rgba(0,0,0,.05);
-    box-shadow: 0 12px 30px rgba(0,0,0,.06);
+    background:rgba(255,255,255,.80);
+    border:1px solid rgba(0,0,0,.06);
+    box-shadow: 0 12px 30px rgba(0,0,0,.07);
+    min-height:96px;
     display:flex;
     align-items:center;
     justify-content:center;
     text-align:center;
-    font-size:18px;
-    line-height:1.6;
+    font-size:19px;
+    line-height:1.55;
+    overflow:hidden;
+    position:relative;
+  }
+
+  .msgText{
+    display:inline-block;
+    animation: msgWiggle .8s ease;
+    will-change: transform, opacity;
+  }
+  @keyframes msgWiggle{
+    0%{opacity:0; transform:translateY(10px) rotate(-1deg) scale(.98);}
+    55%{opacity:1; transform:translateY(-2px) rotate(1deg) scale(1.02);}
+    100%{opacity:1; transform:translateY(0) rotate(0) scale(1);}
+  }
+
+  /* final */
+  .finalBig{
+    font-size:32px;
+    font-weight:950;
+    margin:4px 0 10px;
+  }
+  .namePill{
+    display:inline-block;
+    padding:4px 12px;
+    border-radius:999px;
+    background:linear-gradient(90deg, rgba(255,179,199,.65), rgba(216,199,255,.65));
+    border:1px solid rgba(0,0,0,.06);
   }
 
   /* Confetti canvas */
@@ -261,70 +407,102 @@
     z-index:1;
     display:none;
   }
-
-  .finalBig{
-    font-size:28px;
-    font-weight:850;
-    letter-spacing:.2px;
-    margin:6px 0 8px;
-  }
-  .finalName{
-    display:inline-block;
-    padding:4px 10px;
-    border-radius:999px;
-    background:linear-gradient(90deg, rgba(255,179,199,.55), rgba(216,199,255,.55));
-    border:1px solid rgba(0,0,0,.06);
-  }
 </style>
 </head>
 
 <body>
+<div class="blob" style="left:-60px; top:40px; background:var(--pink)"></div>
+<div class="blob" style="right:-70px; top:120px; background:var(--mint); animation-duration:12s"></div>
+<div class="blob" style="left:40px; bottom:-90px; background:var(--lav); animation-duration:11s"></div>
+
 <canvas id="confetti"></canvas>
+<div class="arena" id="arena"></div>
 
 <div class="app">
   <div class="card">
     <div class="top">
       <div>
-        <div class="title">a small gift</div>
-        <p class="sub" id="subline">tap the box</p>
+        <div class="title" id="title">gift</div>
+        <p class="sub" id="sub">open the box</p>
       </div>
-      <div class="badge" id="badge">level 1</div>
+      <div class="badge" id="badge">1/3</div>
     </div>
 
-    <!-- SCREEN 1 -->
-    <div id="s1" class="screen active">
+    <!-- Screen 1 -->
+    <div class="screen active" id="s1">
       <div class="stage">
         <div class="giftWrap" id="giftWrap">
           <div class="bow"><div class="knot"></div></div>
           <div class="lid"></div>
 
           <div class="giftBox">
-            <div class="giftStripe"></div>
+            <div class="giftStripeV"></div>
             <div class="giftStripeH"></div>
           </div>
 
-          <div class="kitty" id="kitty" title="click me">🐱</div>
+          <!-- Your file in repo root -->
+          <img class="kittyInBox" id="kittyInBox" src="kitten.png" alt="kitten" />
         </div>
 
-        <div class="kittyHint" id="kittyHint">ok now catch the kitten (tap it)</div>
-        <button class="btn" id="openBtn">open</button>
+        <div class="hint" id="hint">catch the kitten (tap it)</div>
+
+        <div class="nav">
+          <button class="btnGhost" id="back1" disabled>back</button>
+          <button class="btn" id="openBtn">open</button>
+        </div>
       </div>
     </div>
 
-    <!-- SCREEN 2 -->
-    <div id="s2" class="screen">
-      <div class="msgBox" id="msg"></div>
-      <button class="btn" id="nextBtn">next</button>
+    <!-- Screen 2 -->
+    <div class="screen" id="s2">
+      <div class="grid" id="grid">
+        <div class="tile" data-msg="You Day!!!!">
+          <div class="emoji">⭐</div>
+          <small>stars</small>
+        </div>
+        <div class="tile" data-msg="you act tough but care about everything">
+          <div class="emoji">🎀</div>
+          <small>ribbon</small>
+        </div>
+        <div class="tile" data-msg="you notice people before they notice you">
+          <div class="emoji">✉️</div>
+          <small>envelope</small>
+        </div>
+        <div class="tile" data-msg="21 now — i was here first 😼">
+          <div class="emoji">🐾</div>
+          <small>paw</small>
+        </div>
+        <div class="tile" data-msg="i respect you more than i say">
+          <div class="emoji">🧁</div>
+          <small>cupcake</small>
+        </div>
+        <div class="tile" data-msg="may Allah put barakah in your time and ease what comes next">
+          <div class="emoji">🌙</div>
+          <small>dua</small>
+        </div>
+      </div>
+
+      <div class="popup" id="popup">
+        <span class="msgText" id="msgText">tap something</span>
+      </div>
+
+      <div class="nav">
+        <button class="btnGhost" id="back2">back</button>
+        <button class="btn" id="finishBtn">finish</button>
+      </div>
     </div>
 
-    <!-- SCREEN 3 -->
-    <div id="s3" class="screen">
-      <div class="stage" style="padding-top:2px">
-        <div class="finalBig">Happy Birth <span class="finalName">Fatoom</span></div>
-        <p class="sub" style="font-size:16px; margin-top:0">
-          may Allah put barakah in your time and ease in what comes next
+    <!-- Screen 3 -->
+    <div class="screen" id="s3">
+      <div class="stage">
+        <div class="finalBig">Happy Birth <span class="namePill">Fatoom</span></div>
+        <p class="sub" style="font-size:16px; margin:0; max-width:36ch;">
+          may Allah put barakah in your time and ease what comes next
         </p>
-        <button class="btn" onclick="boomAgain()">boom again</button>
+        <div class="nav">
+          <button class="btnGhost" id="back3">back</button>
+          <button class="btn" id="boomBtn">boom again</button>
+        </div>
       </div>
     </div>
 
@@ -332,164 +510,250 @@
 </div>
 
 <script>
-  // ===== Screen logic =====
-  const s1 = document.getElementById('s1');
-  const s2 = document.getElementById('s2');
-  const s3 = document.getElementById('s3');
-  const badge = document.getElementById('badge');
-  const subline = document.getElementById('subline');
+  // ---------- background stars ----------
+  (function makeStars(){
+    const count = 18;
+    for(let i=0;i<count;i++){
+      const s=document.createElement("div");
+      s.className="star";
+      s.style.left=(Math.random()*100)+"vw";
+      s.style.top=(Math.random()*100)+"vh";
+      s.style.animationDelay=(Math.random()*2.6)+"s";
+      s.style.width = (4 + Math.random()*4) + "px";
+      s.style.height = s.style.width;
+      document.body.appendChild(s);
+    }
+  })();
 
-  const giftWrap = document.getElementById('giftWrap');
-  const openBtn = document.getElementById('openBtn');
-  const kitty = document.getElementById('kitty');
-  const kittyHint = document.getElementById('kittyHint');
+  function burstStars(){
+    for(let i=0;i<10;i++){
+      const s=document.createElement("div");
+      s.className="star";
+      s.style.left=(38+Math.random()*24)+"vw";
+      s.style.top=(36+Math.random()*12)+"vh";
+      s.style.animationDuration="1.4s";
+      s.style.width="7px"; s.style.height="7px";
+      document.body.appendChild(s);
+      setTimeout(()=>s.remove(),2000);
+    }
+  }
+
+  // ---------- navigation ----------
+  const screens = [document.getElementById("s1"), document.getElementById("s2"), document.getElementById("s3")];
+  const titleEl = document.getElementById("title");
+  const subEl = document.getElementById("sub");
+  const badgeEl = document.getElementById("badge");
+
+  function setScreen(i){
+    screens.forEach((s, idx)=> s.classList.toggle("active", idx===i));
+    badgeEl.textContent = (i+1)+"/3";
+    if(i===0){ titleEl.textContent="gift"; subEl.textContent="open the box"; }
+    if(i===1){ titleEl.textContent="inside"; subEl.textContent="tap items"; }
+    if(i===2){ titleEl.textContent="boom"; subEl.textContent="happy 21st"; }
+  }
+
+  // back buttons
+  document.getElementById("back1").addEventListener("click", ()=> setScreen(0));
+  document.getElementById("back2").addEventListener("click", ()=> setScreen(0));
+  document.getElementById("back3").addEventListener("click", ()=> setScreen(1));
+
+  // ---------- gift + kitten ----------
+  const giftWrap = document.getElementById("giftWrap");
+  const openBtn = document.getElementById("openBtn");
+  const kittyInBox = document.getElementById("kittyInBox");
+  const hint = document.getElementById("hint");
+  const arena = document.getElementById("arena");
 
   let opened = false;
-  let kittyReleased = false;
+  let runner = null;
+  let raf = null;
 
-  openBtn.addEventListener('click', () => {
+  function rand(min,max){ return Math.random()*(max-min)+min; }
+
+  function startRunner(){
+    // create runner img
+    runner = document.createElement("img");
+    runner.src = "kitten.png";
+    runner.alt = "kitten";
+    runner.className = "runner";
+    arena.appendChild(runner);
+
+    // initial position + velocity
+    let x = window.innerWidth*0.52;
+    let y = window.innerHeight*0.46;
+    let vx = rand(4.2, 6.1) * (Math.random()<0.5 ? -1 : 1);
+    let vy = rand(3.2, 5.1) * (Math.random()<0.5 ? -1 : 1);
+
+    function step(){
+      x += vx;
+      y += vy;
+
+      const size = 104;
+      const pad = 14;
+
+      if(x < pad){ x = pad; vx *= -1; }
+      if(x > window.innerWidth - size - pad){ x = window.innerWidth - size - pad; vx *= -1; }
+      if(y < pad){ y = pad; vy *= -1; }
+      if(y > window.innerHeight - size - pad){ y = window.innerHeight - size - pad; vy *= -1; }
+
+      // little wiggle so it feels alive
+      const wiggle = Math.sin(Date.now()/90) * 2.2;
+      runner.style.transform = `translate(${x}px, ${y}px) rotate(${wiggle}deg) scaleX(${vx>0 ? 1 : -1})`;
+
+      raf = requestAnimationFrame(step);
+    }
+
+    step();
+
+    runner.addEventListener("click", ()=>{
+      stopRunner();
+      setScreen(1);
+    });
+  }
+
+  function stopRunner(){
+    if(raf) cancelAnimationFrame(raf);
+    raf = null;
+    if(runner){ runner.remove(); runner=null; }
+  }
+
+  openBtn.addEventListener("click", ()=>{
     if(opened) return;
     opened = true;
 
-    // open the box
-    giftWrap.classList.add('open');
+    giftWrap.classList.add("open");
     openBtn.disabled = true;
     openBtn.textContent = "opened";
 
-    // kitten jumps out
-    kitty.classList.add('jump');
+    // pop kitten from box
+    kittyInBox.classList.add("pop");
 
-    setTimeout(() => {
-      kittyReleased = true;
-      // kitten runs around
-      kitty.classList.add('run');
-      kittyHint.classList.add('hintOn');
-      subline.textContent = "tap the kitten";
-    }, 750);
+    setTimeout(()=>{
+      // show hint + run
+      hint.classList.add("on");
+      subEl.textContent = "tap the kitten";
+      kittyInBox.style.display = "none"; // switch to runner
+      startRunner();
+    }, 850);
   });
 
-  kitty.addEventListener('click', () => {
-    if(!kittyReleased) return;
+  // ---------- items/messages ----------
+  const popup = document.getElementById("popup");
+  const msgText = document.getElementById("msgText");
+  const tiles = Array.from(document.querySelectorAll(".tile"));
+  let openedCount = 0;
 
-    // go to messages screen
-    s1.classList.remove('active');
-    s2.classList.add('active');
-    badge.textContent = "level 2";
-    subline.textContent = "ok now read this";
-
-    // stop kitten + hide
-    kitty.style.display = "none";
-    kittyHint.style.display = "none";
-
-    showMsg();
-  });
-
-  // ===== Messages =====
-  const msg = document.getElementById('msg');
-  const nextBtn = document.getElementById('nextBtn');
-
-  const messages = [
-    "ok serious for 2 seconds",
-    "21 is kinda wild",
-    "i made this instead of a normal message",
-    "happy birthday fr",
-    "may Allah bless your year"
-  ];
-  let mi = 0;
-
-  function showMsg(){
-    msg.textContent = messages[mi];
+  function setPopup(text){
+    msgText.textContent = text;
+    // restart animation by cloning node
+    const clone = msgText.cloneNode(true);
+    msgText.parentNode.replaceChild(clone, msgText);
+    // update reference
+    window.__msgText = clone;
   }
+  // keep reference consistent
+  window.__msgText = msgText;
 
-  nextBtn.addEventListener('click', () => {
-    mi++;
-    if(mi < messages.length){
-      showMsg();
+  tiles.forEach(t=>{
+    t.addEventListener("click", ()=>{
+      const msg = t.getAttribute("data-msg");
+
+      // track opens
+      if(!t.dataset.opened){
+        t.dataset.opened = "1";
+        openedCount++;
+        t.style.filter = "saturate(1.15)";
+      }
+
+      // special effects for first message
+      if(msg === "You Day!!!!") burstStars();
+
+      // animated popup text
+      setPopup(msg);
+
+      // tiny bounce feedback on tile
+      t.animate([
+        { transform:"scale(1)" },
+        { transform:"scale(1.03)" },
+        { transform:"scale(1)" }
+      ], { duration: 260, easing:"ease-out" });
+    });
+  });
+
+  // finish button requires interaction
+  document.getElementById("finishBtn").addEventListener("click", ()=>{
+    if(openedCount < 3){
+      setPopup("open at least 3 things first 😭");
       return;
     }
-    // final screen + confetti
-    s2.classList.remove('active');
-    s3.classList.add('active');
-    badge.textContent = "boom";
-    subline.textContent = "ok done";
-    startConfetti(1400);
+    setScreen(2);
+    startConfetti(1500);
   });
 
-  // ===== Confetti (simple canvas) =====
-  const canvas = document.getElementById('confetti');
-  const ctx = canvas.getContext('2d');
-  let W, H, confettiPieces = [], confettiOn = false;
+  // ---------- confetti ----------
+  const canvas = document.getElementById("confetti");
+  const ctx = canvas.getContext("2d");
+  let W,H,pieces=[],running=false;
 
   function resize(){
     W = canvas.width = window.innerWidth;
     H = canvas.height = window.innerHeight;
   }
-  window.addEventListener('resize', resize);
+  window.addEventListener("resize", resize);
   resize();
 
-  function rand(min,max){ return Math.random()*(max-min)+min; }
-
-  function makeConfetti(n=180){
+  function makeConfetti(n=260){
     const colors = ["#ffb3c7","#ffd2a6","#bfead8","#d8c7ff","#ffffff"];
-    confettiPieces = Array.from({length:n}).map(()=>({
+    pieces = Array.from({length:n}).map(()=>({
       x: rand(0,W),
       y: rand(-H, 0),
-      r: rand(3,7),
-      vy: rand(2.5,6.5),
-      vx: rand(-2.2,2.2),
-      rot: rand(0,Math.PI),
-      vr: rand(-0.12,0.12),
+      s: rand(4,9),
+      vy: rand(2.8,7.2),
+      vx: rand(-2.6,2.6),
+      r: rand(0,Math.PI),
+      vr: rand(-0.16,0.16),
       c: colors[Math.floor(rand(0, colors.length))]
     }));
   }
 
   function draw(){
-    if(!confettiOn) return;
+    if(!running) return;
     ctx.clearRect(0,0,W,H);
-    confettiPieces.forEach(p=>{
+    for(const p of pieces){
       p.x += p.vx;
       p.y += p.vy;
-      p.rot += p.vr;
+      p.r += p.vr;
 
-      if(p.y > H + 20){
-        p.y = rand(-80, -20);
-        p.x = rand(0,W);
-      }
+      if(p.y > H + 20){ p.y = rand(-80,-20); p.x = rand(0,W); }
       if(p.x < -20) p.x = W+20;
       if(p.x > W+20) p.x = -20;
 
       ctx.save();
-      ctx.translate(p.x, p.y);
-      ctx.rotate(p.rot);
+      ctx.translate(p.x,p.y);
+      ctx.rotate(p.r);
       ctx.fillStyle = p.c;
-      ctx.fillRect(-p.r, -p.r, p.r*2, p.r*2);
+      ctx.fillRect(-p.s/2, -p.s/2, p.s, p.s);
       ctx.restore();
-    });
+    }
     requestAnimationFrame(draw);
   }
 
-  function startConfetti(ms=1200){
-    canvas.style.display = "block";
-    confettiOn = true;
-    makeConfetti(220);
+  function startConfetti(ms=1400){
+    canvas.style.display="block";
+    running=true;
+    makeConfetti(300);
     draw();
     setTimeout(()=>{
-      confettiOn = false;
+      running=false;
       ctx.clearRect(0,0,W,H);
-      canvas.style.display = "none";
+      canvas.style.display="none";
     }, ms);
   }
 
-  function boomAgain(){
-    startConfetti(1400);
-  }
+  document.getElementById("boomBtn").addEventListener("click", ()=> startConfetti(1500));
 
-  // Safety: always start on screen 1 (prevents weird caching behavior)
-  (function forceStart(){
-    s1.classList.add('active');
-    s2.classList.remove('active');
-    s3.classList.remove('active');
-  })();
+  // ---------- safety: always start at screen 1 ----------
+  setScreen(0);
 </script>
 </body>
 </html>
